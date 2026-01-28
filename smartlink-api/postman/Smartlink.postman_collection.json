@@ -1,0 +1,65 @@
+{
+  "info": {
+    "name": "Smartlink API (MVP)",
+    "_postman_id": "b7d2a6b1-5c3f-4f40-9e70-6d0c3d3e9c1a",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api", "auth", "register"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"Buyer One\",\n  \"phone\": \"08012345678\",\n  \"email\": \"buyer1@example.com\",\n  \"password\": \"password\",\n  \"role\": \"buyer\",\n  \"device_name\": \"postman\"\n}\n"
+        }
+      }
+    },
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api", "auth", "login"] },
+        "body": { "mode": "raw", "raw": "{\n  \"phone\": \"08012345678\",\n  \"password\": \"password\",\n  \"device_name\": \"postman\"\n}\n" }
+      }
+    },
+    {
+      "name": "Zones - List",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{base_url}}/api/zones", "host": ["{{base_url}}"], "path": ["api", "zones"] }
+      }
+    },
+    {
+      "name": "Wallet - Show (auth)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": { "raw": "{{base_url}}/api/wallet", "host": ["{{base_url}}"], "path": ["api", "wallet"] }
+      }
+    },
+    {
+      "name": "Orders - Create (auth)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "{{base_url}}/api/orders", "host": ["{{base_url}}"], "path": ["api", "orders"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"shop_id\": 1,\n  \"delivery_address_text\": \"1 Market Street\",\n  \"items\": [\n    { \"product_id\": 1, \"qty\": 1 }\n  ]\n}\n"
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "token", "value": "" }
+  ]
+}
+

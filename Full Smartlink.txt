@@ -1,0 +1,512 @@
+Smartlink – Full System Description
+Overview
+Smartlink is a trust-first, hyper-local digital marketplace designed to solve the fundamental trust and logistics problems limiting e-commerce adoption in emerging markets.
+Rather than relying on anonymous sellers and faceless logistics companies, Smartlink builds commerce around verified local sellers, known community riders (Smartlink Pilots), and escrow-protected payments, making online transactions as safe and personal as buying from a nearby shop.
+Smartlink does not try to replace physical markets.It digitizes trust within them.
+The Core Problem
+In many emerging markets, e-commerce faces a deep trust deficit:
+Buyers fear being scammed, receiving fake or damaged goods
+Sellers fear buyers refusing payment or abusing delivery
+Logistics are slow, impersonal, and unaccountable
+Cash-on-delivery creates fraud and operational waste
+Platforms lack human accountability at the neighborhood level
+These problems are not technical — they are trust and proximity problems.
+The Smartlink Solution
+Smartlink re-engineers e-commerce around identity, locality, and accountability.
+It introduces a system where:
+Every participant is verified
+Every payment is secured by escrow
+Every delivery is handled by a known rider
+Every transaction occurs within a defined neighborhood
+Every action leaves a traceable record
+This approach dramatically reduces fraud, delivery delays, and payment disputes.
+How Smartlink Works (High Level)
+Buyers browse products from verified local sellers
+Buyers prepay using a Smartlink Wallet
+Funds are locked in escrow, not paid directly to the seller
+Sellers dispatch orders using a private pool of trusted riders
+Riders collect and deliver items within the same zone
+Buyers confirm delivery
+Escrow releases funds to the seller
+All parties are rated, reinforcing long-term trust
+Key System Pillars
+1. Trust-First Onboarding (KYC & Verification)
+Smartlink ensures that all users are real, accountable people or businesses.
+Buyers: Phone and email verification before wallet access
+Riders (Smartlink Pilots):
+Government ID verification
+Vehicle documentation
+Operational zone anchoring
+Sellers:
+Business registration (RC number)
+Bank account name matching
+Physical location verification
+Advanced sellers undergo live video shop inspections and product audits
+Verification is phased to reduce friction during early growth.
+2. Wallet & Escrow Payment System
+Smartlink eliminates financial risk on both sides.
+Buyers must pre-fund their wallet
+Payments are held in escrow until delivery confirmation
+No cash-on-delivery
+Checkout requires double authentication (OTP)
+Funds are released:
+Immediately after buyer confirmation
+Automatically after a set timeout (24–48 hours)
+Frozen if a dispute is raised
+This removes fear for both buyers and sellers.
+3. Hyper-Local Dispatch & Private Rider Pools
+Smartlink operates at the neighborhood level.
+Sellers and riders are assigned to specific zones
+Each seller maintains a private pool of trusted riders
+Orders are first broadcast only to that pool
+If no rider accepts, the system falls back to all verified riders in the zone
+This model improves speed, reliability, and accountability.
+4. The Smartlink Pilot (Elite Rider Model)
+Smartlink riders are not anonymous couriers.
+They are trained, identifiable delivery professionals.
+Key features:
+Branded delivery boxes for product protection
+QR-code verification on rider vests
+Mandatory pickup proof video recorded inside the shop
+GPS and time-stamped deliveries
+This protects buyers, sellers, and the platform.
+5. Dispute Resolution & Accountability
+When disputes occur, Smartlink relies on evidence, not assumptions.
+Evidence includes:
+Pickup proof videos
+Delivery timestamps and GPS logs
+Communication history
+Order lifecycle records
+Admins resolve disputes by:
+Refunding buyers
+Paying sellers
+Penalizing riders or sellers
+Suspending bad actors
+This system enforces discipline and fairness.
+6. Reputation & Trust Scoring
+Trust compounds over time.
+Buyers rate sellers and riders
+Sellers rate riders
+Ratings affect:
+Dispatch priority
+Seller visibility
+Platform privileges
+Consistently poor performers are removed, strengthening the ecosystem.
+Target Market
+Urban and semi-urban communities
+Neighborhood businesses (electronics, food, pharmacies, fashion)
+Buyers who distrust traditional e-commerce
+Riders seeking stable, professional work
+Smartlink is especially suited for markets where proximity matters more than speed at scale.
+Business Model
+Smartlink generates revenue through:
+Small transaction fees
+Seller verification subscriptions
+Sale of branded rider kits
+Optional promoted listings (later phase)
+Revenue is aligned with trust and transaction volume, not exploitation.
+Why Smartlink Wins
+Smartlink’s advantages are structural, not cosmetic:
+Trust is built into the system, not added later
+Escrow eliminates fraud incentives
+Hyper-local design enables speed and accountability
+Private rider pools humanize logistics
+Verification creates a durable moat
+This model scales zone by zone, not city by city.
+Vision
+Smartlink aims to become the invisible trust infrastructure powering local digital trade across cities — enabling safe commerce, strengthening neighborhoods, and unlocking economic activity without sacrificing human accountability.
+Simple One-Line Summary (Use This Everywhere)
+Smartlink is a trust-first, hyper-local marketplace that makes online buying feel as safe as shopping next door.
+1) Database Schema (MVP Tables & Key Fields)
+A. Auth & Roles
+users
+id (PK)
+full_name
+phone (unique)
+email (nullable, unique)
+password_hash
+role ENUM(buyer,seller,rider,admin)
+status ENUM(pending,active,suspended,banned)
+phone_verified_at (nullable)
+email_verified_at (nullable)
+created_at, updated_at
+user_profiles (optional but clean)
+user_id (PK/FK users.id)
+avatar_url (nullable)
+dob (nullable)
+address_text (nullable)
+B. Zones (Hyper-local)
+zones
+id
+name (e.g., “Wuse 2”)
+city
+state
+polygon_geojson (nullable) (or store center + radius for MVP)
+is_active (bool)
+user_zones
+id
+user_id
+zone_id
+type ENUM(home,operational) (seller/rider operational)
+created_at
+C. KYC / Verification
+kyc_requests
+id
+user_id
+kyc_type ENUM(buyer_basic,seller,rider)
+status ENUM(pending,approved,rejected)
+submitted_at
+reviewed_by (admin user_id, nullable)
+reviewed_at (nullable)
+rejection_reason (nullable)
+kyc_documents
+id
+kyc_request_id
+doc_type ENUM(nin,drivers_license,vehicle_papers,rc,shop_video,shop_photo)
+file_url
+created_at
+D. Sellers & Shops
+shops
+id
+seller_user_id (FK users.id)
+shop_name
+description (nullable)
+zone_id
+address_text
+is_verified (bool)
+verification_phase ENUM(phase1,phase2)
+created_at
+seller_bank_accounts
+id
+seller_user_id
+bank_name
+account_number (encrypted at rest recommended)
+account_name
+verified_at (nullable)
+E. Products
+products
+id
+shop_id
+name
+description (nullable)
+price (decimal)
+currency (default NGN)
+stock_qty
+status ENUM(active,inactive,out_of_stock)
+created_at
+product_images
+id
+product_id
+image_url
+sort_order
+F. Riders & Availability
+rider_profiles
+rider_user_id (PK/FK users.id)
+vehicle_type ENUM(bike,car,tricycle)
+plate_number (nullable)
+is_elite (bool)
+qr_code_token (unique)
+created_at
+rider_availability
+rider_user_id (PK)
+status ENUM(offline,available,busy)
+last_seen_at
+G. Seller Private Rider Pool
+seller_rider_pools
+id
+shop_id
+rider_user_id
+status ENUM(invited,active,removed)
+added_by (seller_user_id)
+created_at
+H. Wallet Ledger (FINTECH CORE)
+wallet_accounts
+id
+user_id (unique)
+currency (NGN)
+available_balance (decimal) (cached)
+ledger_balance (decimal) (optional)
+status ENUM(active,frozen)
+created_at
+wallet_transactions (immutable ledger)
+id
+wallet_account_id
+type ENUM(topup,debit,credit,hold,release,refund,fee)
+direction ENUM(in,out)
+amount (decimal)
+reference (unique) (idempotency)
+related_entity_type (nullable: order,escrow,payout)
+related_entity_id (nullable)
+meta_json (nullable)
+created_at
+I. Escrow
+escrow_holds
+id
+order_id (unique)
+buyer_wallet_account_id
+seller_user_id
+amount
+status ENUM(held,released,frozen,refunded)
+hold_expires_at (24–48 hrs)
+created_at
+payouts
+id
+seller_user_id
+order_id
+amount
+status ENUM(pending,processing,paid,failed)
+provider ENUM(paystack,flutterwave)
+provider_ref (nullable)
+created_at
+J. Orders
+orders
+id
+buyer_user_id
+shop_id
+zone_id
+subtotal_amount
+delivery_fee_amount
+total_amount
+status ENUM(placed,paid,accepted_by_seller,dispatching,assigned_to_rider,picked_up,delivered,confirmed,cancelled,disputed)
+payment_status ENUM(pending,paid,refunded)
+delivery_address_text
+created_at
+order_items
+id
+order_id
+product_id
+qty
+unit_price
+line_total
+order_status_history
+id
+order_id
+status
+changed_by_user_id (nullable)
+created_at
+K. Dispatch
+dispatch_jobs
+id
+order_id (unique)
+shop_id
+zone_id
+status ENUM(pending,broadcasting,assigned,expired,cancelled)
+assigned_rider_user_id (nullable)
+private_pool_only_until (nullable)
+fallback_broadcast_at (nullable)
+created_at
+dispatch_offers
+id
+dispatch_job_id
+rider_user_id
+offer_status ENUM(sent,seen,accepted,declined,expired)
+offered_at
+responded_at (nullable)
+L. Proof / Evidence
+order_evidence
+id
+order_id
+type ENUM(pickup_video,delivery_photo)
+file_url
+captured_by_user_id
+created_at
+M. Disputes
+disputes
+id
+order_id (unique)
+raised_by_user_id
+reason ENUM(wrong_item,damaged_item,not_delivered,other)
+description (nullable)
+status ENUM(open,under_review,resolved,rejected)
+resolved_by_admin_id (nullable)
+resolution ENUM(refund_buyer,pay_seller,partial_refund,penalize_rider,penalize_seller)
+created_at
+N. Ratings
+ratings
+id
+order_id
+rater_user_id
+ratee_user_id
+ratee_type ENUM(seller,rider)
+stars (1–5)
+comment (nullable)
+created_at
+2) API Endpoints (Routes) for MVP (Laravel)
+Auth
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+GET /api/me
+Zones
+GET /api/zones
+POST /api/user/zones (set operational/home zone)
+KYC
+POST /api/kyc/submit
+GET /api/kyc/status
+Products & Shops
+GET /api/shops (filter by zone)
+GET /api/shops/{id}
+GET /api/products (filter by zone/shop)
+GET /api/products/{id}
+Seller
+POST /api/seller/shop
+POST /api/seller/products
+PATCH /api/seller/products/{id}
+POST /api/seller/rider-pool/add
+POST /api/seller/rider-pool/remove
+GET /api/seller/orders
+Wallet
+GET /api/wallet
+POST /api/wallet/topup/initiate
+POST /api/wallet/topup/verify (or use webhook only)
+GET /api/wallet/transactions
+Orders
+POST /api/orders
+GET /api/orders/{id}
+GET /api/orders (buyer list)
+POST /api/orders/{id}/confirm-delivery
+POST /api/orders/{id}/raise-dispute
+Dispatch
+Seller
+POST /api/orders/{id}/dispatch (creates dispatch job)
+Rider
+GET /api/rider/dispatch/offers
+POST /api/rider/dispatch/offers/{offerId}/accept
+POST /api/rider/dispatch/offers/{offerId}/decline
+POST /api/rider/orders/{id}/pickup-proof (upload video)
+POST /api/rider/orders/{id}/mark-picked-up
+POST /api/rider/orders/{id}/mark-delivered
+Disputes
+GET /api/disputes/{orderId}
+Ratings
+POST /api/ratings
+Webhooks (Public)
+POST /api/webhooks/paystack
+POST /api/webhooks/flutterwave
+3) Laravel Folder Structure (Clean “Domain Modules”)
+Inside app/:
+app/
+  Domain/
+    Auth/
+      Controllers/
+      Requests/
+      Actions/
+      Policies/
+    Users/
+      Models/
+      Services/
+    Zones/
+      Models/
+      Controllers/
+      Services/
+    Kyc/
+      Models/
+      Controllers/
+      Services/
+    Shops/
+      Models/
+      Controllers/
+      Services/
+    Products/
+      Models/
+      Controllers/
+      Services/
+    Wallet/
+      Models/
+      Services/
+      Actions/
+    Escrow/
+      Models/
+      Services/
+      Actions/
+    Orders/
+      Models/
+      Controllers/
+      Services/
+    Dispatch/
+      Models/
+      Services/
+      Jobs/
+    Evidence/
+      Models/
+      Controllers/
+      Services/
+    Disputes/
+      Models/
+      Controllers/
+      Services/
+    Ratings/
+      Models/
+      Controllers/
+      Services/
+    Notifications/
+      Services/
+      Jobs/
+  Http/
+    Middleware/
+  Providers/
+routes/
+  api.php
+database/
+  migrations/
+  seeders/
+Why this works: MVP stays in one repo but code stays organized like microservices.
+4) Dispatch Logic (Pseudo-code)
+Goal:✅ Notify seller’s private rider pool first✅ First accept wins✅ If nobody accepts in 10 mins → broadcast to all riders in zone✅ Prevent double assignment
+Pseudo-code
+function dispatchOrder(orderId, sellerId):
+  order = Orders.get(orderId)
+  assert order.status in ["paid","accepted_by_seller"]
+  job = DispatchJobs.create(
+    order_id=order.id,
+    shop_id=order.shop_id,
+    zone_id=order.zone_id,
+    status="broadcasting",
+    private_pool_only_until=now + 10min,
+    fallback_broadcast_at=now + 10min
+  )
+  riders = SellerRiderPools.getActiveRiders(order.shop_id)
+  availableRiders = filterAvailable(riders)
+  sendOffers(job, availableRiders)
+  enqueueJob("dispatch.monitor", job.id, run_at=now+10min)
+  return job
+function sendOffers(job, riders):
+  for rider in riders:
+    DispatchOffers.create(job_id=job.id, rider_id=rider.id, status="sent")
+    notify(rider, "New Delivery Offer", jobSummary(job))
+function acceptOffer(offerId, riderId):
+  beginTransaction()
+  offer = DispatchOffers.lockForUpdate(offerId)
+  job   = DispatchJobs.lockForUpdate(offer.dispatch_job_id)
+  if offer.rider_id != riderId: reject
+  if offer.status not in ["sent","seen"]: reject
+  if job.status == "assigned": reject
+  # assign
+  offer.status = "accepted"
+  job.status = "assigned"
+  job.assigned_rider_user_id = riderId
+  Orders.updateStatus(job.order_id, "assigned_to_rider")
+  # expire all other offers
+  DispatchOffers.expireOthers(job.id, exceptOfferId=offer.id)
+  commitTransaction()
+  notifySeller(job.shop_id, "Rider assigned", riderId)
+  notifyRider(riderId, "You got the job", job.order_id)
+function monitorDispatch(jobId):
+  job = DispatchJobs.get(jobId)
+  if job.status == "assigned": return
+  # fallback broadcast
+  zoneRiders = Riders.getVerifiedRidersInZone(job.zone_id)
+  available = filterAvailable(zoneRiders)
+  sendOffers(job, available)
+  # expire job after additional time window
+  enqueueJob("dispatch.expire", job.id, run_at=now+15min)
+function expireDispatch(jobId):
+  job = DispatchJobs.get(jobId)
+  if job.status == "assigned": return
+  job.status = "expired"
+  Orders.updateStatus(job.order_id, "dispatching")  # or back to accepted_by_seller
+  notifySeller(job.shop_id, "No rider accepted", job.order_id)
+Important safeguards
+Use DB transactions + row locks on accept
+Use reference unique keys for webhooks
+Expire old offers to avoid confusion
