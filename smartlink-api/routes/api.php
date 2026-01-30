@@ -6,6 +6,9 @@ use App\Domain\Disputes\Controllers\AdminDisputeController;
 use App\Domain\Kyc\Controllers\AdminKycController;
 use App\Domain\Kyc\Controllers\KycController;
 use App\Domain\Orders\Controllers\OrderController;
+use App\Domain\Orders\Controllers\OrderQuoteController;
+use App\Domain\Orders\Controllers\ServiceOrderController;
+use App\Domain\Orders\Controllers\SellerOrderWorkflowController;
 use App\Domain\Ratings\Controllers\RatingController;
 use App\Domain\Shops\Controllers\PublicShopController;
 use App\Domain\Shops\Controllers\SellerShopController;
@@ -27,6 +30,9 @@ use App\Domain\Returns\Controllers\ReturnController;
 use App\Domain\Returns\Controllers\AdminReturnController;
 use App\Domain\Shops\Controllers\SellerMetricsController;
 use App\Domain\Users\Controllers\UserDeviceController;
+use App\Domain\Workflows\Controllers\AdminWorkflowController;
+use App\Domain\Workflows\Controllers\AdminWorkflowStepController;
+use App\Domain\Workflows\Controllers\AdminWorkflowTransitionController;
 use Illuminate\Support\Facades\Route;
 
 $registerRoutes = function (): void {
@@ -64,10 +70,13 @@ $registerRoutes = function (): void {
         Route::post('wallet/topup/initiate', [WalletController::class, 'initiateTopup']);
 
         Route::post('orders', [OrderController::class, 'store']);
+        Route::post('orders/service', [ServiceOrderController::class, 'store']);
         Route::get('orders', [OrderController::class, 'index']);
         Route::get('orders/{order}', [OrderController::class, 'show']);
         Route::post('orders/{order}/confirm-delivery', [OrderController::class, 'confirmDelivery']);
         Route::post('orders/{order}/raise-dispute', [OrderController::class, 'raiseDispute']);
+        Route::post('orders/{order}/quote/approve', [OrderQuoteController::class, 'approve']);
+        Route::post('orders/{order}/quote/reject', [OrderQuoteController::class, 'reject']);
         Route::post('orders/{order}/cancel', [OrderController::class, 'cancel']);
         Route::post('orders/{order}/returns', [ReturnController::class, 'store']);
         Route::get('orders/{order}/messages', [MessageController::class, 'index']);
@@ -78,11 +87,19 @@ $registerRoutes = function (): void {
         Route::middleware('role:seller')->group(function (): void {
             Route::prefix('seller')->group(function (): void {
                 Route::post('shop', [SellerShopController::class, 'store']);
+                Route::get('shops', [SellerShopController::class, 'index']);
+                Route::get('shops/{shop}', [SellerShopController::class, 'show']);
+                Route::post('shops/{shop}/default-workflow', [SellerShopController::class, 'setDefaultWorkflow']);
                 Route::get('orders', [SellerDispatchController::class, 'orders']);
                 Route::get('metrics', [SellerMetricsController::class, 'show']);
 
                 Route::post('products', [SellerProductController::class, 'store']);
                 Route::patch('products/{product}', [SellerProductController::class, 'update']);
+
+                Route::post('orders/{order}/workflow/start', [SellerOrderWorkflowController::class, 'start']);
+                Route::post('orders/{order}/workflow/advance', [SellerOrderWorkflowController::class, 'advance']);
+                Route::get('orders/{order}/workflow/next-steps', [SellerOrderWorkflowController::class, 'nextSteps']);
+                Route::post('orders/{order}/quote/send', [OrderQuoteController::class, 'send']);
 
                 Route::post('rider-pool/add', [SellerDispatchController::class, 'addRiderToPool']);
                 Route::post('rider-pool/remove', [SellerDispatchController::class, 'removeRiderFromPool']);
@@ -116,6 +133,18 @@ $registerRoutes = function (): void {
             Route::post('returns/{returnRequest}/approve', [AdminReturnController::class, 'approve']);
             Route::post('returns/{returnRequest}/reject', [AdminReturnController::class, 'reject']);
             Route::post('returns/{returnRequest}/complete', [AdminReturnController::class, 'complete']);
+
+            Route::get('workflows', [AdminWorkflowController::class, 'index']);
+            Route::post('workflows', [AdminWorkflowController::class, 'store']);
+            Route::get('workflows/{workflow}', [AdminWorkflowController::class, 'show']);
+            Route::patch('workflows/{workflow}', [AdminWorkflowController::class, 'update']);
+
+            Route::post('workflows/{workflow}/steps', [AdminWorkflowStepController::class, 'store']);
+            Route::patch('workflow-steps/{workflowStep}', [AdminWorkflowStepController::class, 'update']);
+            Route::delete('workflow-steps/{workflowStep}', [AdminWorkflowStepController::class, 'destroy']);
+
+            Route::post('workflows/{workflow}/transitions', [AdminWorkflowTransitionController::class, 'store']);
+            Route::delete('workflows/{workflow}/transitions', [AdminWorkflowTransitionController::class, 'destroy']);
         });
     });
 };

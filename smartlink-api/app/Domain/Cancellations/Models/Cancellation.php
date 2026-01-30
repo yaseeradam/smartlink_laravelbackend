@@ -13,12 +13,9 @@ class Cancellation extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'penalty_amount' => 'decimal:2',
-        ];
-    }
+    protected $casts = [
+        'penalty_amount' => 'decimal:2',
+    ];
 
     public function order()
     {

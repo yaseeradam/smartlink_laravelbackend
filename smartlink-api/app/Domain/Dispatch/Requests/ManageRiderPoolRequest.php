@@ -18,7 +18,7 @@ class ManageRiderPoolRequest extends FormRequest
     {
         return [
             'rider_user_id' => ['required', 'integer', 'exists:users,id'],
+            'shop_id' => ['nullable', 'integer', 'exists:shops,id'],
         ];
     }
 }
-

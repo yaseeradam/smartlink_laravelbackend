@@ -20,7 +20,7 @@ class WalletService
 
     public function requireVerifiedForWallet(User $user): void
     {
-        if (! $user->hasVerifiedPhone()) {
+        if (!$user->hasVerifiedPhone()) {
             throw new \RuntimeException('Phone verification required.');
         }
     }

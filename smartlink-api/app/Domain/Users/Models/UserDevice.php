@@ -12,13 +12,10 @@ class UserDevice extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'platform' => DevicePlatform::class,
-            'last_seen_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'platform' => DevicePlatform::class,
+        'last_seen_at' => 'datetime',
+    ];
 
     public function user()
     {

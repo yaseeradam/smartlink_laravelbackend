@@ -12,16 +12,12 @@ class AuditLog extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'meta_json' => 'array',
-        ];
-    }
+    protected $casts = [
+        'meta_json' => 'array',
+    ];
 
     public function actor()
     {
         return $this->belongsTo(User::class, 'actor_user_id');
     }
 }
-

@@ -18,6 +18,7 @@ class CreateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'shop_id' => ['nullable', 'integer', 'exists:shops,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
             'price' => ['required', 'numeric', 'min:0.01'],
@@ -28,4 +29,3 @@ class CreateProductRequest extends FormRequest
         ];
     }
 }
-

@@ -22,6 +22,8 @@ use App\Domain\Wallet\Enums\WalletTransactionType;
 use App\Domain\Wallet\Services\WalletService;
 use App\Domain\Escrow\Enums\EscrowStatus;
 use App\Domain\Escrow\Services\EscrowService;
+use App\Domain\Workflows\Models\WorkflowStep;
+use App\Support\Exceptions\ConflictException;
 use Illuminate\Support\Facades\DB;
 
 class CancellationService
@@ -43,6 +45,8 @@ class CancellationService
             if ($locked->status === OrderStatus::Cancelled) {
                 return Cancellation::query()->where('order_id', $locked->id)->firstOrFail();
             }
+
+            $this->assertCancellationAllowedByWorkflow($locked);
 
             $penaltyAmount = 0.0;
 
@@ -87,7 +91,7 @@ class CancellationService
 
     private function assertSellerCanCancel(User $seller, Order $order): void
     {
-        if ((int) $order->shop_id !== (int) ($seller->shop?->id ?? 0)) {
+        if ((int) ($order->shop?->seller_user_id ?? 0) !== (int) $seller->id) {
             throw new \RuntimeException('Forbidden.');
         }
 
@@ -204,5 +208,26 @@ class CancellationService
             'status' => $status->value,
             'changed_by_user_id' => $changedByUserId,
         ]);
+    }
+
+    private function assertCancellationAllowedByWorkflow(Order $order): void
+    {
+        if (! $order->workflow_id || ! $order->workflow_step_id) {
+            return;
+        }
+
+        $triggerSequence = WorkflowStep::query()
+            ->where('workflow_id', $order->workflow_id)
+            ->where('is_dispatch_trigger', true)
+            ->value('sequence');
+
+        if (! $triggerSequence) {
+            return;
+        }
+
+        $currentSequence = WorkflowStep::query()->whereKey($order->workflow_step_id)->value('sequence');
+        if ($currentSequence && (int) $currentSequence >= (int) $triggerSequence) {
+            throw new ConflictException('Order can no longer be cancelled.');
+        }
     }
 }

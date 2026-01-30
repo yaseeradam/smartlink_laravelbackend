@@ -26,16 +26,13 @@ class User extends Authenticatable
         'password',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'role' => UserRole::class,
-            'status' => UserStatus::class,
-            'phone_verified_at' => 'datetime',
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'role' => UserRole::class,
+        'status' => UserStatus::class,
+        'phone_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     protected static function booted(): void
     {
@@ -58,7 +55,12 @@ class User extends Authenticatable
 
     public function shop()
     {
-        return $this->hasOne(Shop::class, 'seller_user_id');
+        return $this->hasOne(Shop::class, 'seller_user_id')->latestOfMany();
+    }
+
+    public function shops()
+    {
+        return $this->hasMany(Shop::class, 'seller_user_id');
     }
 
     public function kycRequests()

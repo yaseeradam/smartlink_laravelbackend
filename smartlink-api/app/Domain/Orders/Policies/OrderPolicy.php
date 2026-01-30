@@ -8,6 +8,11 @@ use App\Domain\Users\Models\User;
 
 class OrderPolicy
 {
+    private function sellerOwnsOrder(User $user, Order $order): bool
+    {
+        return (int) ($order->shop?->seller_user_id ?? 0) === (int) $user->id;
+    }
+
     public function view(User $user, Order $order): bool
     {
         if ($user->role === UserRole::Admin) {
@@ -19,7 +24,7 @@ class OrderPolicy
         }
 
         if ($user->role === UserRole::Seller) {
-            return (int) $order->shop_id === (int) ($user->shop?->id ?? 0);
+            return $this->sellerOwnsOrder($user, $order);
         }
 
         if ($user->role === UserRole::Rider) {
@@ -32,7 +37,7 @@ class OrderPolicy
     public function dispatch(User $user, Order $order): bool
     {
         return $user->role === UserRole::Seller
-            && (int) $order->shop_id === (int) ($user->shop?->id ?? 0);
+            && $this->sellerOwnsOrder($user, $order);
     }
 
     public function confirmDelivery(User $user, Order $order): bool
@@ -57,7 +62,7 @@ class OrderPolicy
         }
 
         if ($user->role === UserRole::Seller) {
-            return (int) $order->shop_id === (int) ($user->shop?->id ?? 0);
+            return $this->sellerOwnsOrder($user, $order);
         }
 
         if ($user->role === UserRole::Rider) {
@@ -65,5 +70,21 @@ class OrderPolicy
         }
 
         return false;
+    }
+
+    public function manageWorkflow(User $user, Order $order): bool
+    {
+        return $user->role === UserRole::Seller && $this->sellerOwnsOrder($user, $order);
+    }
+
+    public function sendQuote(User $user, Order $order): bool
+    {
+        return $this->manageWorkflow($user, $order);
+    }
+
+    public function approveQuote(User $user, Order $order): bool
+    {
+        return $user->role === UserRole::Buyer
+            && (int) $order->buyer_user_id === (int) $user->id;
     }
 }

@@ -15,14 +15,11 @@ class Payout extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'amount' => 'decimal:2',
-            'status' => PayoutStatus::class,
-            'provider' => PayoutProvider::class,
-        ];
-    }
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'status' => PayoutStatus::class,
+        'provider' => PayoutProvider::class,
+    ];
 
     public function seller()
     {
@@ -34,4 +31,3 @@ class Payout extends Model
         return $this->belongsTo(Order::class);
     }
 }
-

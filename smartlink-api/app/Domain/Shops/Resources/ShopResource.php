@@ -24,8 +24,16 @@ class ShopResource extends JsonResource
             'address_text' => $shop->address_text,
             'is_verified' => (bool) $shop->is_verified,
             'verification_phase' => $shop->verification_phase->value,
+            'shop_type' => $shop->shop_type?->value ?? $shop->shop_type,
+            'default_workflow' => $shop->relationLoaded('defaultWorkflow') && $shop->defaultWorkflow
+                ? [
+                    'id' => $shop->defaultWorkflow->id,
+                    'code' => $shop->defaultWorkflow->code,
+                    'name' => $shop->defaultWorkflow->name,
+                    'is_active' => (bool) $shop->defaultWorkflow->is_active,
+                ]
+                : null,
             'created_at' => optional($shop->created_at)?->toISOString(),
         ];
     }
 }
-

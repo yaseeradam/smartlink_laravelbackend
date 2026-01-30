@@ -41,7 +41,7 @@ class DispatchService
             /** @var Order $lockedOrder */
             $lockedOrder = Order::query()->whereKey($order->id)->lockForUpdate()->firstOrFail();
 
-            if ((int) $lockedOrder->shop_id !== (int) ($seller->shop?->id ?? 0)) {
+            if ((int) ($lockedOrder->shop?->seller_user_id ?? 0) !== (int) $seller->id) {
                 throw new \RuntimeException('Forbidden.');
             }
 

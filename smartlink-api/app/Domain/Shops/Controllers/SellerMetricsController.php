@@ -13,10 +13,19 @@ class SellerMetricsController
     public function show()
     {
         $seller = request()->user();
-        $shopId = $seller->shop?->id;
+        $requestedShopId = request()->query('shop_id');
+        $shopId = $requestedShopId ? (int) $requestedShopId : (int) ($seller->shop?->id ?? 0);
 
         if (! $shopId) {
             return response()->json(['message' => 'Shop not found.'], 404);
+        }
+
+        $ownsShop = \App\Domain\Shops\Models\Shop::query()
+            ->whereKey($shopId)
+            ->where('seller_user_id', $seller->id)
+            ->exists();
+        if (! $ownsShop) {
+            return response()->json(['message' => 'Forbidden.'], 403);
         }
 
         return response()->json($this->metricsService->forSellerShop((int) $shopId));

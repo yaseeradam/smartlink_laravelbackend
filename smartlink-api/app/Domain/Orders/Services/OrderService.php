@@ -7,15 +7,20 @@ use App\Domain\Disputes\Models\Dispute;
 use App\Domain\Escrow\Services\EscrowService;
 use App\Domain\Delivery\Services\DeliveryFeeService;
 use App\Domain\Fraud\Services\FraudService;
+use App\Domain\Orders\Enums\OrderWorkflowState;
 use App\Domain\Orders\Enums\OrderPaymentStatus;
 use App\Domain\Orders\Enums\OrderStatus;
+use App\Domain\Orders\Enums\OrderKind;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Models\OrderItem;
 use App\Domain\Orders\Models\OrderStatusHistory;
+use App\Domain\Orders\Models\OrderWorkflowEvent;
 use App\Domain\Products\Enums\ProductStatus;
 use App\Domain\Products\Models\Product;
+use App\Domain\Shops\Enums\ShopType;
 use App\Domain\Shops\Models\Shop;
 use App\Domain\Users\Models\User;
+use App\Domain\Workflows\Models\WorkflowStep;
 use App\Domain\Wallet\Enums\WalletTransactionDirection;
 use App\Domain\Wallet\Enums\WalletTransactionType;
 use App\Domain\Wallet\Services\WalletService;
@@ -67,6 +72,9 @@ class OrderService
             $order = Order::create([
                 'buyer_user_id' => $buyer->id,
                 'shop_id' => $shop->id,
+                'order_kind' => OrderKind::Product,
+                'service_type' => $shop->shop_type ?? ShopType::Retail,
+                'workflow_id' => $shop->default_workflow_id,
                 'zone_id' => $shop->zone_id,
                 'subtotal_amount' => 0,
                 'delivery_fee_amount' => 0,
@@ -166,6 +174,83 @@ class OrderService
             $this->appendHistory($order, OrderStatus::Paid, $buyer->id);
 
             return $order->fresh(['items', 'shop', 'zone', 'escrowHold']);
+        });
+    }
+
+    public function placeServiceOrder(User $buyer, int $shopId, string $deliveryAddressText, string $serviceType, ?string $issueDescription = null): Order
+    {
+        return DB::transaction(function () use ($buyer, $shopId, $deliveryAddressText, $serviceType, $issueDescription): Order {
+            /** @var Shop $shop */
+            $shop = Shop::query()->whereKey($shopId)->firstOrFail();
+
+            /** @var Zone $zone */
+            $zone = Zone::query()->whereKey($shop->zone_id)->firstOrFail();
+            if (! $zone->is_active || $zone->status === ZoneStatus::Paused) {
+                throw new \RuntimeException('Zone is paused. Orders are not allowed.');
+            }
+
+            $buyerHomeZoneId = UserZone::query()
+                ->where('user_id', $buyer->id)
+                ->where('type', 'home')
+                ->value('zone_id');
+
+            if (! $buyerHomeZoneId) {
+                throw new \RuntimeException('Home zone is required before placing orders.');
+            }
+
+            if ((int) $buyerHomeZoneId !== (int) $shop->zone_id) {
+                throw new \RuntimeException('Order zone mismatch. This shop is outside your home zone.');
+            }
+
+            if ($serviceType === ShopType::Repair->value && ! $issueDescription) {
+                throw new \RuntimeException('Issue description is required for repair orders.');
+            }
+
+            $order = Order::create([
+                'buyer_user_id' => $buyer->id,
+                'shop_id' => $shop->id,
+                'order_kind' => OrderKind::Service,
+                'service_type' => ShopType::tryFrom($serviceType) ?? ShopType::Retail,
+                'workflow_id' => $shop->default_workflow_id,
+                'zone_id' => $shop->zone_id,
+                'subtotal_amount' => 0,
+                'delivery_fee_amount' => 0,
+                'rider_share_amount' => 0,
+                'platform_fee_amount' => 0,
+                'total_amount' => 0,
+                'status' => OrderStatus::Placed,
+                'payment_status' => OrderPaymentStatus::Pending,
+                'delivery_address_text' => $deliveryAddressText,
+                'issue_description' => $issueDescription,
+                'workflow_state' => OrderWorkflowState::None,
+            ]);
+
+            $this->appendHistory($order, OrderStatus::Placed, $buyer->id);
+
+            if ($order->workflow_id) {
+                $firstStep = WorkflowStep::query()
+                    ->where('workflow_id', $order->workflow_id)
+                    ->orderBy('sequence')
+                    ->first();
+
+                if ($firstStep && $firstStep->step_key === 'request_submitted') {
+                    $order->forceFill([
+                        'workflow_step_id' => $firstStep->id,
+                        'workflow_state' => OrderWorkflowState::InProgress,
+                        'workflow_started_at' => now(),
+                    ])->save();
+
+                    OrderWorkflowEvent::create([
+                        'order_id' => $order->id,
+                        'from_step_id' => null,
+                        'to_step_id' => $firstStep->id,
+                        'changed_by_user_id' => $buyer->id,
+                        'created_at' => now(),
+                    ]);
+                }
+            }
+
+            return $order->fresh(['shop', 'zone', 'workflow', 'workflowStep', 'workflowEvents.toStep', 'workflowEvents.fromStep']);
         });
     }
 

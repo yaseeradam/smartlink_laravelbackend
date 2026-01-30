@@ -21,7 +21,12 @@ class SellerProductController
         $data = $request->validated();
 
         /** @var Shop|null $shop */
-        $shop = Shop::query()->where('seller_user_id', $seller->id)->first();
+        $shopId = isset($data['shop_id']) ? (int) $data['shop_id'] : null;
+        $shop = Shop::query()
+            ->when($shopId, fn ($q) => $q->whereKey($shopId))
+            ->where('seller_user_id', $seller->id)
+            ->orderByDesc('id')
+            ->first();
         if (! $shop) {
             return response()->json(['message' => 'Create a shop first.'], 422);
         }

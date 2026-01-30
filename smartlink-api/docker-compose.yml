@@ -1,0 +1,18 @@
+services:
+    smartlink-api:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: smartlink-api
+        ports:
+            - '8000:8000'
+        volumes:
+            - ./:/var/www/html
+        environment:
+            WWWGROUP: '${WWWGROUP:-1000}'
+        networks:
+            - sail
+
+networks:
+    sail:
+        driver: bridge

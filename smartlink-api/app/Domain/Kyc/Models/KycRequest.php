@@ -14,16 +14,13 @@ class KycRequest extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'kyc_type' => KycType::class,
-            'status' => KycStatus::class,
-            'submitted_at' => 'datetime',
-            'reviewed_at' => 'datetime',
-            'meta_json' => 'array',
-        ];
-    }
+    protected $casts = [
+        'kyc_type' => KycType::class,
+        'status' => KycStatus::class,
+        'submitted_at' => 'datetime',
+        'reviewed_at' => 'datetime',
+        'meta_json' => 'array',
+    ];
 
     public function user()
     {

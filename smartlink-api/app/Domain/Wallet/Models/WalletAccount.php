@@ -13,13 +13,10 @@ class WalletAccount extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'available_balance' => 'decimal:2',
-            'status' => WalletAccountStatus::class,
-        ];
-    }
+    protected $casts = [
+        'available_balance' => 'decimal:2',
+        'status' => WalletAccountStatus::class,
+    ];
 
     public function user()
     {
@@ -31,4 +28,3 @@ class WalletAccount extends Model
         return $this->hasMany(WalletTransaction::class);
     }
 }
-

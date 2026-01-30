@@ -15,14 +15,11 @@ class DispatchOffer extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'offer_status' => DispatchOfferStatus::class,
-            'offered_at' => 'datetime',
-            'responded_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'offer_status' => DispatchOfferStatus::class,
+        'offered_at' => 'datetime',
+        'responded_at' => 'datetime',
+    ];
 
     public function job()
     {
@@ -34,4 +31,3 @@ class DispatchOffer extends Model
         return $this->belongsTo(User::class, 'rider_user_id');
     }
 }
-

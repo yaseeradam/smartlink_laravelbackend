@@ -1,0 +1,11 @@
+PHP Fatal error:  Uncaught BadMethodCallException: Method Illuminate\Foundation\Application::handleCommand does not exist. in C:\Users\HP\Desktop\Testing\SmartLink\smartlink-api\vendor\laravel\framework\src\Illuminate\Macroable\Traits\Macroable.php:112
+
+Fatal error: Uncaught BadMethodCallException: Method Illuminate\Foundation\Application::handleCommand does not exist. in C:\Users\HP\Desktop\Testing\SmartLink\smartlink-api\vendor\laravel\framework\src\Illuminate\Macroable\Traits\Macroable.php:112
+Stack trace:
+#0 C:\Users\HP\Desktop\Testing\SmartLink\smartlink-api\artisan(13): Illuminate\Foundation\Application->__call('handleCommand', Array)
+#1 {main}
+  thrown in C:\Users\HP\Desktop\Testing\SmartLink\smartlink-api\vendor\laravel\framework\src\Illuminate\Macroable\Traits\Macroable.php on line 112
+Stack trace:
+#0 C:\Users\HP\Desktop\Testing\SmartLink\smartlink-api\artisan(13): Illuminate\Foundation\Application->__call('handleCommand', Array)
+#1 {main}
+  thrown in C:\Users\HP\Desktop\Testing\SmartLink\smartlink-api\vendor\laravel\framework\src\Illuminate\Macroable\Traits\Macroable.php on line 112

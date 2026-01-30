@@ -14,13 +14,10 @@ class Product extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'price' => 'decimal:2',
-            'status' => ProductStatus::class,
-        ];
-    }
+    protected $casts = [
+        'price' => 'decimal:2',
+        'status' => ProductStatus::class,
+    ];
 
     public function shop()
     {
@@ -37,4 +34,3 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 }
-

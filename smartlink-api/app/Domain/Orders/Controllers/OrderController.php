@@ -29,17 +29,34 @@ class OrderController
         $data = $request->validated();
 
         try {
-            $order = $this->orderService->placeOrder(
-                $user,
-                (int) $data['shop_id'],
-                (string) $data['delivery_address_text'],
-                $data['items'],
-            );
+            if (($data['order_kind'] ?? 'product') === 'service') {
+                $order = $this->orderService->placeServiceOrder(
+                    $user,
+                    (int) $data['shop_id'],
+                    (string) $data['delivery_address_text'],
+                    (string) $data['service_type'],
+                    $data['issue_description'] ?? null,
+                );
+            } else {
+                $order = $this->orderService->placeOrder(
+                    $user,
+                    (int) $data['shop_id'],
+                    (string) $data['delivery_address_text'],
+                    $data['items'],
+                );
+            }
         } catch (\RuntimeException | \InvalidArgumentException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }
 
-        return new OrderResource($order->load(['items', 'escrowHold']));
+        return new OrderResource($order->load([
+            'items',
+            'escrowHold',
+            'workflow',
+            'workflowStep',
+            'workflowEvents.toStep',
+            'workflowEvents.fromStep',
+        ]));
     }
 
     public function index(Request $request)
@@ -49,8 +66,8 @@ class OrderController
         $orders = Order::query()
             ->when($user->role->value === 'buyer', fn ($q) => $q->where('buyer_user_id', $user->id))
             ->when($user->role->value === 'seller', function ($q) use ($user) {
-                $shopId = $user->shop?->id;
-                $q->where('shop_id', $shopId ?? 0);
+                $shopIds = $user->shops()->pluck('id')->all();
+                $q->whereIn('shop_id', $shopIds !== [] ? $shopIds : [0]);
             })
             ->when($user->role->value === 'rider', function ($q) use ($user) {
                 $q->whereHas('dispatchJob', fn ($dq) => $dq->where('assigned_rider_user_id', $user->id));
@@ -65,7 +82,15 @@ class OrderController
     {
         Gate::authorize('view', $order);
 
-        return new OrderResource($order->load(['items', 'escrowHold', 'dispatchJob']));
+        return new OrderResource($order->load([
+            'items',
+            'escrowHold',
+            'dispatchJob',
+            'workflow',
+            'workflowStep',
+            'workflowEvents.toStep',
+            'workflowEvents.fromStep',
+        ]));
     }
 
     public function confirmDelivery(Request $request, Order $order)
@@ -124,6 +149,8 @@ class OrderController
                 $order,
                 (string) $request->validated()['reason'],
             );
+        } catch (\App\Support\Exceptions\ConflictException $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
         } catch (\RuntimeException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }

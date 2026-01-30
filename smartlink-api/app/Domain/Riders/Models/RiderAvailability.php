@@ -20,17 +20,13 @@ class RiderAvailability extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'status' => RiderAvailabilityStatus::class,
-            'last_seen_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'status' => RiderAvailabilityStatus::class,
+        'last_seen_at' => 'datetime',
+    ];
 
     public function rider()
     {
         return $this->belongsTo(User::class, 'rider_user_id');
     }
 }
-

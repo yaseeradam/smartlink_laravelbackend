@@ -16,14 +16,11 @@ class Dispute extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'reason' => DisputeReason::class,
-            'status' => DisputeStatus::class,
-            'resolution' => DisputeResolution::class,
-        ];
-    }
+    protected $casts = [
+        'reason' => DisputeReason::class,
+        'status' => DisputeStatus::class,
+        'resolution' => DisputeResolution::class,
+    ];
 
     public function order()
     {
@@ -40,4 +37,3 @@ class Dispute extends Model
         return $this->belongsTo(User::class, 'resolved_by_admin_id');
     }
 }
-

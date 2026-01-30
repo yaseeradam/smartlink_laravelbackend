@@ -14,12 +14,9 @@ class Rating extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'ratee_type' => RateeType::class,
-        ];
-    }
+    protected $casts = [
+        'ratee_type' => RateeType::class,
+    ];
 
     public function order()
     {
@@ -36,4 +33,3 @@ class Rating extends Model
         return $this->belongsTo(User::class, 'ratee_user_id');
     }
 }
-

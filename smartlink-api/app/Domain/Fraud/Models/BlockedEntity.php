@@ -12,10 +12,7 @@ class BlockedEntity extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'type' => BlockedEntityType::class,
-        ];
-    }
+    protected $casts = [
+        'type' => BlockedEntityType::class,
+    ];
 }

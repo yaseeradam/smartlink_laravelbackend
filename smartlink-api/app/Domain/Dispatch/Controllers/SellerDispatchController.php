@@ -8,6 +8,7 @@ use App\Domain\Dispatch\Services\DispatchService;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Resources\OrderResource;
 use App\Domain\Riders\Models\RiderAvailability;
+use App\Domain\Shops\Models\Shop;
 use App\Domain\Users\Models\User;
 use Illuminate\Support\Facades\Gate;
 
@@ -20,10 +21,25 @@ class SellerDispatchController
     public function orders()
     {
         $seller = request()->user();
-        $shopId = $seller->shop?->id;
+        $requestedShopId = request()->query('shop_id');
+        $shopId = $requestedShopId ? (int) $requestedShopId : null;
+
+        if ($shopId) {
+            $ownsShop = Shop::query()
+                ->whereKey($shopId)
+                ->where('seller_user_id', $seller->id)
+                ->exists();
+            if (! $ownsShop) {
+                return response()->json(['message' => 'Forbidden.'], 403);
+            }
+        }
+
+        $shopIds = $shopId
+            ? [$shopId]
+            : Shop::query()->where('seller_user_id', $seller->id)->pluck('id')->all();
 
         $orders = Order::query()
-            ->where('shop_id', $shopId ?? 0)
+            ->whereIn('shop_id', $shopIds !== [] ? $shopIds : [0])
             ->latest('id')
             ->paginate(20);
 
@@ -33,11 +49,20 @@ class SellerDispatchController
     public function addRiderToPool(ManageRiderPoolRequest $request)
     {
         $seller = $request->user();
-        $shopId = $seller->shop?->id;
+        $data = $request->validated();
+
+        $shopId = isset($data['shop_id']) ? (int) $data['shop_id'] : (int) ($seller->shop?->id ?? 0);
         if (! $shopId) {
             return response()->json(['message' => 'Create a shop first.'], 422);
         }
-        $data = $request->validated();
+
+        $ownsShop = Shop::query()
+            ->whereKey($shopId)
+            ->where('seller_user_id', $seller->id)
+            ->exists();
+        if (! $ownsShop) {
+            return response()->json(['message' => 'Forbidden.'], 403);
+        }
 
         /** @var User $rider */
         $rider = User::query()->whereKey($data['rider_user_id'])->firstOrFail();
@@ -60,11 +85,20 @@ class SellerDispatchController
     public function removeRiderFromPool(ManageRiderPoolRequest $request)
     {
         $seller = $request->user();
-        $shopId = $seller->shop?->id;
+        $data = $request->validated();
+
+        $shopId = isset($data['shop_id']) ? (int) $data['shop_id'] : (int) ($seller->shop?->id ?? 0);
         if (! $shopId) {
             return response()->json(['message' => 'Create a shop first.'], 422);
         }
-        $data = $request->validated();
+
+        $ownsShop = Shop::query()
+            ->whereKey($shopId)
+            ->where('seller_user_id', $seller->id)
+            ->exists();
+        if (! $ownsShop) {
+            return response()->json(['message' => 'Forbidden.'], 403);
+        }
 
         SellerRiderPool::query()
             ->where('shop_id', $shopId)
@@ -78,6 +112,13 @@ class SellerDispatchController
     {
         $seller = request()->user();
         Gate::authorize('dispatch', $order);
+
+        if ($order->workflow_id) {
+            $order->loadMissing('workflowStep');
+            if (! $order->workflowStep || ! $order->workflowStep->is_dispatch_trigger) {
+                return response()->json(['message' => 'Dispatch is blocked until the order is ready.'], 409);
+            }
+        }
 
         try {
             $job = $this->dispatchService->dispatchOrder($seller, $order);

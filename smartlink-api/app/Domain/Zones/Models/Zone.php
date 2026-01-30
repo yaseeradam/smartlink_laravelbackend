@@ -14,14 +14,11 @@ class Zone extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'polygon_geojson' => 'array',
-            'is_active' => 'boolean',
-            'status' => ZoneStatus::class,
-        ];
-    }
+    protected $casts = [
+        'polygon_geojson' => 'array',
+        'is_active' => 'boolean',
+        'status' => ZoneStatus::class,
+    ];
 
     public function shops()
     {

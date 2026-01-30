@@ -21,7 +21,7 @@ class CreateShopRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:2000'],
             'zone_id' => ['required', 'integer', 'exists:zones,id'],
             'address_text' => ['required', 'string', 'max:255'],
+            'shop_type' => ['nullable', 'string', 'in:retail,food,repair,tailor,laundry,print'],
         ];
     }
 }
-

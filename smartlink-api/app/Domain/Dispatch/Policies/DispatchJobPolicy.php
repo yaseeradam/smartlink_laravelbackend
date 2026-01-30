@@ -15,7 +15,7 @@ class DispatchJobPolicy
         }
 
         if ($user->role === UserRole::Seller) {
-            return (int) $dispatchJob->shop_id === (int) ($user->shop?->id ?? 0);
+            return (int) ($dispatchJob->shop?->seller_user_id ?? 0) === (int) $user->id;
         }
 
         if ($user->role === UserRole::Rider) {
@@ -25,4 +25,3 @@ class DispatchJobPolicy
         return false;
     }
 }
-

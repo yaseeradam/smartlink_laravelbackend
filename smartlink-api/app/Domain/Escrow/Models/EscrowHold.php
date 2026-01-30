@@ -15,14 +15,11 @@ class EscrowHold extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'amount' => 'decimal:2',
-            'status' => EscrowStatus::class,
-            'hold_expires_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'status' => EscrowStatus::class,
+        'hold_expires_at' => 'datetime',
+    ];
 
     public function order()
     {
@@ -39,4 +36,3 @@ class EscrowHold extends Model
         return $this->belongsTo(User::class, 'seller_user_id');
     }
 }
-

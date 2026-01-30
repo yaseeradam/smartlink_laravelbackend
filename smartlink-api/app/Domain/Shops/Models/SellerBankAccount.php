@@ -12,16 +12,12 @@ class SellerBankAccount extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'verified_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'verified_at' => 'datetime',
+    ];
 
     public function seller()
     {
         return $this->belongsTo(User::class, 'seller_user_id');
     }
 }
-

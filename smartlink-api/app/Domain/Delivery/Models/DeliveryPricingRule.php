@@ -12,15 +12,12 @@ class DeliveryPricingRule extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'base_fee' => 'decimal:2',
-            'max_distance_km' => 'decimal:2',
-            'rider_share_percent' => 'decimal:2',
-            'platform_fee_percent' => 'decimal:2',
-        ];
-    }
+    protected $casts = [
+        'base_fee' => 'decimal:2',
+        'max_distance_km' => 'decimal:2',
+        'rider_share_percent' => 'decimal:2',
+        'platform_fee_percent' => 'decimal:2',
+    ];
 
     public function zone()
     {

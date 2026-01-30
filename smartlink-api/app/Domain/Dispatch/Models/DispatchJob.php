@@ -17,15 +17,12 @@ class DispatchJob extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'status' => DispatchJobStatus::class,
-            'purpose' => DispatchPurpose::class,
-            'private_pool_only_until' => 'datetime',
-            'fallback_broadcast_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'status' => DispatchJobStatus::class,
+        'purpose' => DispatchPurpose::class,
+        'private_pool_only_until' => 'datetime',
+        'fallback_broadcast_at' => 'datetime',
+    ];
 
     public function order()
     {

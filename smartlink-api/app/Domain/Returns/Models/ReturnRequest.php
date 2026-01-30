@@ -15,12 +15,9 @@ class ReturnRequest extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'status' => ReturnStatus::class,
-        ];
-    }
+    protected $casts = [
+        'status' => ReturnStatus::class,
+    ];
 
     public function order()
     {

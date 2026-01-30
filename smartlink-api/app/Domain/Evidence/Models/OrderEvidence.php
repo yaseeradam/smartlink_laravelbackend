@@ -16,12 +16,9 @@ class OrderEvidence extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'type' => EvidenceType::class,
-        ];
-    }
+    protected $casts = [
+        'type' => EvidenceType::class,
+    ];
 
     public function order()
     {
@@ -33,4 +30,3 @@ class OrderEvidence extends Model
         return $this->belongsTo(User::class, 'captured_by_user_id');
     }
 }
-

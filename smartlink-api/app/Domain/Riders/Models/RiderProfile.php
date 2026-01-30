@@ -16,17 +16,13 @@ class RiderProfile extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'vehicle_type' => VehicleType::class,
-            'is_elite' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'vehicle_type' => VehicleType::class,
+        'is_elite' => 'boolean',
+    ];
 
     public function rider()
     {
         return $this->belongsTo(User::class, 'rider_user_id');
     }
 }
-
