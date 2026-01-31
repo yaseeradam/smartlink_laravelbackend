@@ -61,5 +61,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\EnsureRole::class,
+        'optional_auth' => \App\Http\Middleware\OptionalSanctumAuth::class,
+        'admin_active' => \App\Domain\Admin\Middleware\EnsureAdminActive::class,
+        'admin_reason' => \App\Domain\Admin\Middleware\RequireAdminReason::class,
     ];
 }

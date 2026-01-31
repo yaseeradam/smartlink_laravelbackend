@@ -113,6 +113,30 @@ php artisan test
 - Wallet credits only happen from Paystack webhook (client cannot directly credit wallets).
 - Money actions are ledger-based (`wallet_transactions`) and audit-logged (`audit_logs`).
 - Dispatch uses queued jobs (`BroadcastDispatchOffersJob`) and escrow auto-release uses `AutoReleaseEscrowJob`.
+- Hybrid Recommendation v2 docs: `docs/Hybrid-Recommendation-v2.md`.
+
+## Feeds (Geo Scope)
+
+Feeds support `scope=local|state|national|auto` (default `auto` for `/api/feed/for-you`). Local results are radius-based (default 10km) and `auto` expands `local → state → national` until the requested page size is filled.
+
+Endpoints:
+- `GET /api/feed/near-you` (always local)
+- `GET /api/feed/in-your-state`
+- `GET /api/feed/across-nigeria`
+- `GET /api/feed/for-you`
+
+## Shipping (Non-Local Fulfillment)
+
+Orders include `fulfillment_mode=local_rider|shipping`. Shipping orders use `shipments` (tracking + proofs) and never create rider dispatch jobs.
+
+Seller:
+- `POST /api/seller/orders/{id}/shipping/create`
+- `POST /api/seller/orders/{id}/shipping/mark-packed`
+- `POST /api/seller/orders/{id}/shipping/mark-dropped-off`
+- `POST /api/seller/orders/{id}/shipping/update-status`
+
+Buyer:
+- `POST /api/orders/{id}/shipping/confirm-delivery` (also works via `POST /api/orders/{id}/confirm-delivery`)
 
 ## Post-MVP Features
 

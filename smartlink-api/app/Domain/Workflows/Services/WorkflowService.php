@@ -32,6 +32,10 @@ class WorkflowService
 
             $this->assertSellerOwnsOrder($seller, $locked);
 
+            if ($locked->admin_paused_at) {
+                throw new ConflictException('Order is paused.');
+            }
+
             if (! $locked->workflow_id) {
                 $locked->forceFill([
                     'workflow_id' => $locked->shop?->default_workflow_id,
@@ -86,6 +90,10 @@ class WorkflowService
                 ->firstOrFail();
 
             $this->assertSellerOwnsOrder($seller, $locked);
+
+            if ($locked->admin_paused_at) {
+                throw new ConflictException('Order is paused.');
+            }
 
             if (! $locked->workflow_id || ! $locked->workflow_step_id) {
                 throw new \RuntimeException('Workflow has not been started for this order.');

@@ -10,6 +10,7 @@ use App\Domain\Messaging\Models\Message;
 use App\Domain\Disputes\Models\Dispute;
 use App\Domain\Escrow\Models\EscrowHold;
 use App\Domain\Orders\Enums\OrderKind;
+use App\Domain\Orders\Enums\OrderFulfillmentMode;
 use App\Domain\Orders\Enums\OrderPaymentStatus;
 use App\Domain\Orders\Enums\OrderQuoteStatus;
 use App\Domain\Orders\Enums\OrderStatus;
@@ -18,6 +19,7 @@ use App\Domain\Products\Models\Product;
 use App\Domain\Ratings\Models\Rating;
 use App\Domain\Shops\Enums\ShopType;
 use App\Domain\Shops\Models\Shop;
+use App\Domain\Shipping\Models\Shipment;
 use App\Domain\Users\Models\User;
 use App\Domain\Workflows\Models\Workflow;
 use App\Domain\Workflows\Models\WorkflowStep;
@@ -37,6 +39,8 @@ class Order extends Model
         'rider_share_amount' => 'decimal:2',
         'platform_fee_amount' => 'decimal:2',
         'total_amount' => 'decimal:2',
+        'fulfillment_mode' => OrderFulfillmentMode::class,
+        'admin_paused_at' => 'datetime',
         'status' => OrderStatus::class,
         'payment_status' => OrderPaymentStatus::class,
         'order_kind' => OrderKind::class,
@@ -86,6 +90,11 @@ class Order extends Model
     public function dispatchJob()
     {
         return $this->hasOne(DispatchJob::class)->where('purpose', DispatchPurpose::Delivery->value);
+    }
+
+    public function shipment()
+    {
+        return $this->hasOne(Shipment::class);
     }
 
     public function returnDispatchJob()

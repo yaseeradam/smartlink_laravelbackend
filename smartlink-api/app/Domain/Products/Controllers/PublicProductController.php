@@ -16,8 +16,10 @@ class PublicProductController
         $products = Product::query()
             ->with('images')
             ->where('status', 'active')
+            ->where('stock_qty', '>', 0)
             ->whereHas('shop', function ($q) use ($zoneId, $shopId) {
                 $q->where('is_verified', true)
+                    ->where('status', 'active')
                     ->whereHas('zone', fn ($z) => $z->where('is_active', true)->where('status', 'active'))
                     ->when($zoneId, fn ($qq) => $qq->where('zone_id', $zoneId))
                     ->when($shopId, fn ($qq) => $qq->where('id', $shopId));
@@ -30,7 +32,7 @@ class PublicProductController
 
     public function show(Product $product)
     {
-        if (! $product->shop()->where('is_verified', true)->whereHas('zone', fn ($z) => $z->where('is_active', true)->where('status', 'active'))->exists()) {
+        if ($product->stock_qty <= 0 || ! $product->shop()->where('is_verified', true)->where('status', 'active')->whereHas('zone', fn ($z) => $z->where('is_active', true)->where('status', 'active'))->exists()) {
             return response()->json(['message' => 'Not found.'], 404);
         }
 

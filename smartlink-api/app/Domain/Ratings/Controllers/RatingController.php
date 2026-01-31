@@ -4,6 +4,7 @@ namespace App\Domain\Ratings\Controllers;
 
 use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Models\Order;
+use App\Domain\Recommendations\Jobs\LogUserEventJob;
 use App\Domain\Ratings\Models\Rating;
 use App\Domain\Ratings\Requests\StoreRatingRequest;
 use App\Domain\Ratings\Resources\RatingResource;
@@ -58,7 +59,22 @@ class RatingController
             ]);
         });
 
+        if ($data['ratee_type'] === 'seller') {
+            dispatch(new LogUserEventJob([
+                'user_id' => $user->id,
+                'session_id' => null,
+                'zone_id' => (int) $order->zone_id,
+                'event_type' => 'rate',
+                'entity_type' => 'shop',
+                'entity_id' => (int) $order->shop_id,
+                'query_text' => null,
+                'meta_json' => [
+                    'order_id' => (int) $order->id,
+                    'stars' => (int) $rating->stars,
+                ],
+            ]));
+        }
+
         return new RatingResource($rating);
     }
 }
-

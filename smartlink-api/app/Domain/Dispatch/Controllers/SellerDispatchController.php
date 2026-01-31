@@ -10,6 +10,7 @@ use App\Domain\Orders\Resources\OrderResource;
 use App\Domain\Riders\Models\RiderAvailability;
 use App\Domain\Shops\Models\Shop;
 use App\Domain\Users\Models\User;
+use App\Domain\Orders\Enums\OrderFulfillmentMode;
 use Illuminate\Support\Facades\Gate;
 
 class SellerDispatchController
@@ -112,6 +113,10 @@ class SellerDispatchController
     {
         $seller = request()->user();
         Gate::authorize('dispatch', $order);
+
+        if ($order->fulfillment_mode === OrderFulfillmentMode::Shipping) {
+            return response()->json(['message' => 'Shipping orders cannot use local rider dispatch.'], 409);
+        }
 
         if ($order->workflow_id) {
             $order->loadMissing('workflowStep');

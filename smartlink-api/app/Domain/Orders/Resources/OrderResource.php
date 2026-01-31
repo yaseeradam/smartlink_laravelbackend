@@ -23,6 +23,7 @@ class OrderResource extends JsonResource
             'buyer_user_id' => $order->buyer_user_id,
             'shop_id' => $order->shop_id,
             'zone_id' => $order->zone_id,
+            'fulfillment_mode' => $order->fulfillment_mode?->value,
             'order_kind' => $order->order_kind?->value,
             'service_type' => $order->service_type?->value,
             'subtotal_amount' => (string) $order->subtotal_amount,
@@ -77,6 +78,44 @@ class OrderResource extends JsonResource
                     'hold_expires_at' => optional($order->escrowHold->hold_expires_at)?->toISOString(),
                 ]
                 : null,
+            'shipment' => $this->whenLoaded('shipment', function () use ($order) {
+                $shipment = $order->shipment;
+                if (! $shipment) {
+                    return null;
+                }
+
+                return [
+                    'id' => $shipment->id,
+                    'shipping_type' => $shipment->shipping_type->value,
+                    'courier_name' => $shipment->courier_name,
+                    'tracking_number' => $shipment->tracking_number,
+                    'origin_state' => $shipment->origin_state,
+                    'destination_state' => $shipment->destination_state,
+                    'shipping_fee' => (string) $shipment->shipping_fee,
+                    'status' => $shipment->status->value,
+                    'proof_dropoff_url' => $shipment->proof_dropoff_url,
+                    'proof_delivery_url' => $shipment->proof_delivery_url,
+                    'eta_days_min' => $shipment->eta_days_min,
+                    'eta_days_max' => $shipment->eta_days_max,
+                    'created_at' => optional($shipment->created_at)?->toISOString(),
+                    'updated_at' => optional($shipment->updated_at)?->toISOString(),
+                ];
+            }),
+            'shipment_timeline' => $this->whenLoaded('shipment', function () use ($order) {
+                $shipment = $order->shipment;
+                if (! $shipment || ! $shipment->relationLoaded('timeline')) {
+                    return null;
+                }
+
+                return $shipment->timeline->map(function ($e) {
+                    return [
+                        'status' => $e->status,
+                        'changed_by_user_id' => $e->changed_by_user_id,
+                        'meta' => $e->meta_json,
+                        'created_at' => optional($e->created_at)?->toISOString(),
+                    ];
+                })->values();
+            }),
             'items' => OrderItemResource::collection($this->whenLoaded('items')),
             'created_at' => optional($order->created_at)?->toISOString(),
         ];

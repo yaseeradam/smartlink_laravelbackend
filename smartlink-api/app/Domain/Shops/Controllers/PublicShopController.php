@@ -13,6 +13,7 @@ class PublicShopController
         $zoneId = $request->query('zone_id');
 
         $shops = Shop::query()
+            ->where('status', 'active')
             ->where('is_verified', true)
             ->whereHas('zone', fn ($q) => $q->where('is_active', true)->where('status', 'active'))
             ->when($zoneId, fn ($q) => $q->where('zone_id', $zoneId))
@@ -24,7 +25,7 @@ class PublicShopController
 
     public function show(Shop $shop)
     {
-        if (! $shop->is_verified || ! $shop->zone?->is_active || $shop->zone?->status?->value === 'paused') {
+        if ($shop->status !== 'active' || ! $shop->is_verified || ! $shop->zone?->is_active || $shop->zone?->status?->value === 'paused') {
             return response()->json(['message' => 'Not found.'], 404);
         }
 

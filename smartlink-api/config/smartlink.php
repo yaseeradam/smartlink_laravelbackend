@@ -1,11 +1,16 @@
 <?php
 
 return [
+    'country_code' => env('SMARTLINK_COUNTRY_CODE', 'NG'),
     'currency' => env('SMARTLINK_CURRENCY', 'NGN'),
     'media_disk' => env('SMARTLINK_MEDIA_DISK', env('FILESYSTEM_DISK', 'local')),
 
     'escrow' => [
         'auto_release_hours' => (int) env('SMARTLINK_ESCROW_AUTO_RELEASE_HOURS', 24),
+    ],
+
+    'shipping' => [
+        'auto_release_hours' => (int) env('SMARTLINK_SHIPPING_AUTO_RELEASE_HOURS', 72),
     ],
 
     'dispatch' => [

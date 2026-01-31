@@ -22,6 +22,8 @@ use App\Domain\Riders\Models\RiderAvailability;
 use App\Domain\Riders\Services\RiderStatsService;
 use App\Domain\Users\Models\User;
 use App\Domain\Zones\Models\UserZone;
+use App\Domain\Shops\Enums\ShopShippingType;
+use App\Domain\Orders\Enums\OrderFulfillmentMode;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
@@ -43,6 +45,15 @@ class DispatchService
 
             if ((int) ($lockedOrder->shop?->seller_user_id ?? 0) !== (int) $seller->id) {
                 throw new \RuntimeException('Forbidden.');
+            }
+
+            if ($lockedOrder->admin_paused_at) {
+                throw new \RuntimeException('Order is paused.');
+            }
+
+            $lockedOrder->loadMissing('shop');
+            if ($lockedOrder->fulfillment_mode === OrderFulfillmentMode::Shipping || ($lockedOrder->shop?->shipping_type ?? null) !== ShopShippingType::LocalRider) {
+                throw new \RuntimeException('Shipping orders cannot use local rider dispatch.');
             }
 
             if (! in_array($lockedOrder->status, [OrderStatus::Paid, OrderStatus::AcceptedBySeller], true)) {

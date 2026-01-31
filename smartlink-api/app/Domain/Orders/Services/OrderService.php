@@ -17,6 +17,8 @@ use App\Domain\Orders\Models\OrderStatusHistory;
 use App\Domain\Orders\Models\OrderWorkflowEvent;
 use App\Domain\Products\Enums\ProductStatus;
 use App\Domain\Products\Models\Product;
+use App\Domain\Orders\Enums\OrderFulfillmentMode;
+use App\Domain\Shops\Enums\ShopShippingType;
 use App\Domain\Shops\Enums\ShopType;
 use App\Domain\Shops\Models\Shop;
 use App\Domain\Users\Models\User;
@@ -27,6 +29,7 @@ use App\Domain\Wallet\Services\WalletService;
 use App\Domain\Zones\Models\UserZone;
 use App\Domain\Zones\Models\Zone;
 use App\Domain\Zones\Enums\ZoneStatus;
+use App\Domain\Shipping\Services\ShippingService;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -65,9 +68,17 @@ class OrderService
                 throw new \RuntimeException('Home zone is required before placing orders.');
             }
 
-            if ((int) $buyerHomeZoneId !== (int) $shop->zone_id) {
+            $fulfillmentMode = $shop->shipping_type === ShopShippingType::LocalRider
+                ? OrderFulfillmentMode::LocalRider
+                : OrderFulfillmentMode::Shipping;
+
+            if ($fulfillmentMode === OrderFulfillmentMode::LocalRider && (int) $buyerHomeZoneId !== (int) $shop->zone_id) {
                 throw new \RuntimeException('Order zone mismatch. This shop is outside your home zone.');
             }
+
+            $orderZoneId = $fulfillmentMode === OrderFulfillmentMode::LocalRider
+                ? (int) $shop->zone_id
+                : (int) $buyerHomeZoneId;
 
             $order = Order::create([
                 'buyer_user_id' => $buyer->id,
@@ -75,7 +86,8 @@ class OrderService
                 'order_kind' => OrderKind::Product,
                 'service_type' => $shop->shop_type ?? ShopType::Retail,
                 'workflow_id' => $shop->default_workflow_id,
-                'zone_id' => $shop->zone_id,
+                'zone_id' => $orderZoneId,
+                'fulfillment_mode' => $fulfillmentMode,
                 'subtotal_amount' => 0,
                 'delivery_fee_amount' => 0,
                 'total_amount' => 0,
@@ -129,10 +141,15 @@ class OrderService
             }
 
             $deliveryFee = 0.0;
-            $deliveryFeeBreakdown = $this->deliveryFeeService->calculateForZone((int) $shop->zone_id);
-            $deliveryFee = (float) $deliveryFeeBreakdown['delivery_fee'];
-            $riderShare = (float) $deliveryFeeBreakdown['rider_share'];
-            $platformFee = (float) $deliveryFeeBreakdown['platform_fee'];
+            $riderShare = 0.0;
+            $platformFee = 0.0;
+
+            if ($fulfillmentMode === OrderFulfillmentMode::LocalRider) {
+                $deliveryFeeBreakdown = $this->deliveryFeeService->calculateForZone((int) $shop->zone_id);
+                $deliveryFee = (float) $deliveryFeeBreakdown['delivery_fee'];
+                $riderShare = (float) $deliveryFeeBreakdown['rider_share'];
+                $platformFee = (float) $deliveryFeeBreakdown['platform_fee'];
+            }
             $total = $subtotal + $deliveryFee;
 
             $this->fraudService->checkNewAccountOrderLimit($buyer, $total);
@@ -143,7 +160,9 @@ class OrderService
                 'rider_share_amount' => $riderShare,
                 'platform_fee_amount' => $platformFee,
                 'total_amount' => $total,
-                'delivery_otp_required' => (bool) config('smartlink.delivery.otp_required', false),
+                'delivery_otp_required' => $fulfillmentMode === OrderFulfillmentMode::LocalRider
+                    ? (bool) config('smartlink.delivery.otp_required', false)
+                    : false,
             ])->save();
 
             $buyerWallet = $this->walletService->walletFor($buyer);
@@ -182,6 +201,10 @@ class OrderService
         return DB::transaction(function () use ($buyer, $shopId, $deliveryAddressText, $serviceType, $issueDescription): Order {
             /** @var Shop $shop */
             $shop = Shop::query()->whereKey($shopId)->firstOrFail();
+
+            if ($shop->shipping_type !== ShopShippingType::LocalRider) {
+                throw new \RuntimeException('This shop requires shipping. Checkout is not available yet.');
+            }
 
             /** @var Zone $zone */
             $zone = Zone::query()->whereKey($shop->zone_id)->firstOrFail();
@@ -256,6 +279,12 @@ class OrderService
 
     public function confirmDelivery(User $buyer, Order $order): Order
     {
+        if ($order->fulfillment_mode === OrderFulfillmentMode::Shipping) {
+            /** @var ShippingService $shipping */
+            $shipping = app(ShippingService::class);
+            return $shipping->confirmDelivery($buyer, $order);
+        }
+
         if ((int) $order->buyer_user_id !== (int) $buyer->id) {
             throw new \RuntimeException('Forbidden.');
         }

@@ -86,9 +86,13 @@ class SampleUsersSeeder extends Seeder
                 'shop_name' => 'Smartlink Electronics',
                 'description' => 'Verified local electronics shop',
                 'zone_id' => $zone->id,
+                'country_code' => (string) config('smartlink.country_code', 'NG'),
+                'state_code' => $zone->state,
+                'city' => $zone->city,
                 'address_text' => '1 Market Street',
                 'is_verified' => true,
                 'verification_phase' => 'phase1',
+                'shipping_type' => 'local_rider',
             ],
         );
 

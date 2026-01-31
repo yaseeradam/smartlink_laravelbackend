@@ -85,38 +85,38 @@ class SellerMultiShopAndWorkflowAdminTest extends TestCase
 
         Sanctum::actingAs($admin);
 
-        $workflowId = (int) $this->postJson('/api/admin/workflows', [
+        $workflowId = (int) $this->postJson('/api/legacy-admin/workflows', [
             'code' => 'custom_service',
             'name' => 'Custom Service Flow',
             'is_active' => true,
         ])->assertStatus(201)->json('data.id');
 
-        $this->postJson("/api/admin/workflows/{$workflowId}/steps", [
+        $this->postJson("/api/legacy-admin/workflows/{$workflowId}/steps", [
             'step_key' => 'accepted',
             'title' => 'Accepted',
             'sequence' => 1,
         ])->assertStatus(201);
 
-        $this->postJson("/api/admin/workflows/{$workflowId}/steps", [
+        $this->postJson("/api/legacy-admin/workflows/{$workflowId}/steps", [
             'step_key' => 'ready',
             'title' => 'Ready',
             'sequence' => 2,
             'is_dispatch_trigger' => true,
         ])->assertStatus(201);
 
-        $this->postJson("/api/admin/workflows/{$workflowId}/steps", [
+        $this->postJson("/api/legacy-admin/workflows/{$workflowId}/steps", [
             'step_key' => 'completed',
             'title' => 'Completed',
             'sequence' => 3,
             'is_terminal' => true,
         ])->assertStatus(201);
 
-        $this->postJson("/api/admin/workflows/{$workflowId}/transitions", [
+        $this->postJson("/api/legacy-admin/workflows/{$workflowId}/transitions", [
             'from_step_key' => 'accepted',
             'to_step_key' => 'ready',
         ])->assertOk();
 
-        $this->postJson("/api/admin/workflows/{$workflowId}/transitions", [
+        $this->postJson("/api/legacy-admin/workflows/{$workflowId}/transitions", [
             'from_step_key' => 'ready',
             'to_step_key' => 'completed',
         ])->assertOk();

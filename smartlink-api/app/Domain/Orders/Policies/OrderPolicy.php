@@ -77,6 +77,11 @@ class OrderPolicy
         return $user->role === UserRole::Seller && $this->sellerOwnsOrder($user, $order);
     }
 
+    public function manageShipping(User $user, Order $order): bool
+    {
+        return $user->role === UserRole::Seller && $this->sellerOwnsOrder($user, $order);
+    }
+
     public function sendQuote(User $user, Order $order): bool
     {
         return $this->manageWorkflow($user, $order);

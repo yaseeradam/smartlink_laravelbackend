@@ -11,6 +11,7 @@ use App\Domain\Orders\Resources\OrderResource;
 use App\Domain\Orders\Services\OrderService;
 use App\Domain\Cancellations\Services\CancellationService;
 use App\Domain\Notifications\Jobs\SendPushNotificationJob;
+use App\Domain\Recommendations\Jobs\LogUserEventJob;
 use App\Domain\Users\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -49,6 +50,21 @@ class OrderController
             return response()->json(['message' => $e->getMessage()], 422);
         }
 
+        dispatch(new LogUserEventJob([
+            'user_id' => $user->id,
+            'session_id' => null,
+            'zone_id' => (int) $order->zone_id,
+            'event_type' => 'place_order',
+            'entity_type' => 'shop',
+            'entity_id' => (int) $order->shop_id,
+            'query_text' => null,
+            'meta_json' => [
+                'order_id' => (int) $order->id,
+                'order_kind' => (string) ($order->order_kind?->value ?? 'product'),
+                'total_amount' => (string) $order->total_amount,
+            ],
+        ]));
+
         return new OrderResource($order->load([
             'items',
             'escrowHold',
@@ -86,6 +102,7 @@ class OrderController
             'items',
             'escrowHold',
             'dispatchJob',
+            'shipment.timeline',
             'workflow',
             'workflowStep',
             'workflowEvents.toStep',

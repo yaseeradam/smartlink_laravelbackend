@@ -57,6 +57,22 @@ class EscrowService
         return $hold->fresh();
     }
 
+    public function unfreeze(EscrowHold $hold): EscrowHold
+    {
+        if ($hold->status === EscrowStatus::Held) {
+            return $hold;
+        }
+
+        if ($hold->status !== EscrowStatus::Frozen) {
+            throw new \RuntimeException('Escrow is not frozen.');
+        }
+
+        $hold->forceFill(['status' => EscrowStatus::Held])->save();
+        $this->auditLogger->log(null, 'escrow.unfrozen', $hold, ['order_id' => $hold->order_id]);
+
+        return $hold->fresh();
+    }
+
     public function release(EscrowHold $hold, ?int $actorUserId = null): EscrowHold
     {
         return DB::transaction(function () use ($hold, $actorUserId) {

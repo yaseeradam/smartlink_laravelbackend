@@ -2,6 +2,13 @@
 
 use App\Domain\Auth\Controllers\AuthController;
 use App\Domain\Auth\Controllers\OtpController;
+use App\Domain\Admin\Controllers\AdminAuthController;
+use App\Domain\Admin\Controllers\AdminDisputesController;
+use App\Domain\Admin\Controllers\AdminOrdersController;
+use App\Domain\Admin\Controllers\AdminRidersController;
+use App\Domain\Admin\Controllers\AdminShipmentsController;
+use App\Domain\Admin\Controllers\AdminShopsController;
+use App\Domain\Admin\Controllers\AdminUsersController;
 use App\Domain\Disputes\Controllers\AdminDisputeController;
 use App\Domain\Kyc\Controllers\AdminKycController;
 use App\Domain\Kyc\Controllers\KycController;
@@ -10,6 +17,9 @@ use App\Domain\Orders\Controllers\OrderQuoteController;
 use App\Domain\Orders\Controllers\ServiceOrderController;
 use App\Domain\Orders\Controllers\SellerOrderWorkflowController;
 use App\Domain\Ratings\Controllers\RatingController;
+use App\Domain\Recommendations\Controllers\FavoriteShopController;
+use App\Domain\Recommendations\Controllers\FeedController;
+use App\Domain\Recommendations\Controllers\UserEventController;
 use App\Domain\Shops\Controllers\PublicShopController;
 use App\Domain\Shops\Controllers\SellerShopController;
 use App\Domain\Users\Controllers\UserZoneController;
@@ -24,6 +34,8 @@ use App\Domain\Delivery\Controllers\AdminDeliveryPricingRuleController;
 use App\Domain\Escrow\Controllers\AdminPayoutController;
 use App\Domain\Fraud\Controllers\AdminBlockedEntityController;
 use App\Domain\Messaging\Controllers\MessageController;
+use App\Domain\Shipping\Controllers\BuyerShippingController;
+use App\Domain\Shipping\Controllers\SellerShippingController;
 use App\Domain\Zones\Controllers\ZoneController;
 use App\Domain\Zones\Controllers\AdminZoneController;
 use App\Domain\Returns\Controllers\ReturnController;
@@ -56,6 +68,67 @@ $registerRoutes = function (): void {
     Route::get('products', [PublicProductController::class, 'index']);
     Route::get('products/{product}', [PublicProductController::class, 'show']);
 
+    Route::middleware('optional_auth')->prefix('feed')->group(function (): void {
+        Route::get('home', [FeedController::class, 'home']);
+        Route::get('near-you', [FeedController::class, 'nearYou']);
+        Route::get('in-your-state', [FeedController::class, 'inYourState']);
+        Route::get('across-nigeria', [FeedController::class, 'acrossNigeria']);
+        Route::get('trending', [FeedController::class, 'trending']);
+        Route::get('top-rated', [FeedController::class, 'topRated']);
+        Route::get('for-you', [FeedController::class, 'forYou']);
+        Route::get('ready-soon', [FeedController::class, 'readySoon']);
+    });
+
+    Route::middleware('optional_auth')->post('events', [UserEventController::class, 'store']);
+
+    Route::prefix('admin')->group(function (): void {
+        Route::prefix('auth')->group(function (): void {
+            Route::post('login', [AdminAuthController::class, 'login'])->middleware('throttle:admin_login');
+        });
+
+        Route::middleware(['auth:admin', 'throttle:admin', 'admin_active', 'admin_reason'])->group(function (): void {
+            Route::get('auth/me', [AdminAuthController::class, 'me']);
+            Route::post('auth/logout', [AdminAuthController::class, 'logout']);
+
+            Route::get('orders', [AdminOrdersController::class, 'index']);
+            Route::get('orders/{order}', [AdminOrdersController::class, 'show']);
+            Route::post('orders/{order}/pause', [AdminOrdersController::class, 'pause']);
+            Route::post('orders/{order}/resume', [AdminOrdersController::class, 'resume']);
+            Route::post('orders/{order}/override-workflow-step', [AdminOrdersController::class, 'overrideWorkflowStep']);
+            Route::post('orders/{order}/force-complete', [AdminOrdersController::class, 'forceComplete']);
+            Route::post('orders/{order}/cancel', [AdminOrdersController::class, 'cancel']);
+
+            Route::post('orders/{order}/force-release-escrow', [AdminOrdersController::class, 'forceReleaseEscrow']);
+            Route::post('orders/{order}/force-refund', [AdminOrdersController::class, 'forceRefund']);
+            Route::post('orders/{order}/hold-funds', [AdminOrdersController::class, 'holdFunds']);
+            Route::post('orders/{order}/unhold-funds', [AdminOrdersController::class, 'unholdFunds']);
+
+            Route::get('shipments', [AdminShipmentsController::class, 'index']);
+            Route::get('shipments/{shipment}', [AdminShipmentsController::class, 'show']);
+            Route::post('shipments/{shipment}/invalidate-tracking', [AdminShipmentsController::class, 'invalidateTracking']);
+            Route::post('shipments/{shipment}/mark-status', [AdminShipmentsController::class, 'markStatus']);
+            Route::post('shipments/{shipment}/force-delivered', [AdminShipmentsController::class, 'forceDelivered']);
+            Route::post('shipments/{shipment}/force-failed', [AdminShipmentsController::class, 'forceFailed']);
+
+            Route::get('disputes', [AdminDisputesController::class, 'index']);
+            Route::get('disputes/{dispute}', [AdminDisputesController::class, 'show']);
+            Route::post('disputes/{dispute}/resolve', [AdminDisputesController::class, 'resolve']);
+
+            Route::get('users', [AdminUsersController::class, 'index']);
+            Route::post('users/{user}/suspend', [AdminUsersController::class, 'suspend']);
+            Route::post('users/{user}/unsuspend', [AdminUsersController::class, 'unsuspend']);
+
+            Route::get('shops', [AdminShopsController::class, 'index']);
+            Route::post('shops/{shop}/verify', [AdminShopsController::class, 'verify']);
+            Route::post('shops/{shop}/suspend', [AdminShopsController::class, 'suspend']);
+            Route::post('shops/{shop}/unsuspend', [AdminShopsController::class, 'unsuspend']);
+
+            Route::get('riders', [AdminRidersController::class, 'index']);
+            Route::post('riders/{user}/verify', [AdminRidersController::class, 'verify']);
+            Route::post('riders/{user}/suspend', [AdminRidersController::class, 'suspend']);
+        });
+    });
+
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('me', [AuthController::class, 'me']);
 
@@ -74,6 +147,7 @@ $registerRoutes = function (): void {
         Route::get('orders', [OrderController::class, 'index']);
         Route::get('orders/{order}', [OrderController::class, 'show']);
         Route::post('orders/{order}/confirm-delivery', [OrderController::class, 'confirmDelivery']);
+        Route::post('orders/{order}/shipping/confirm-delivery', [BuyerShippingController::class, 'confirmDelivery']);
         Route::post('orders/{order}/raise-dispute', [OrderController::class, 'raiseDispute']);
         Route::post('orders/{order}/quote/approve', [OrderQuoteController::class, 'approve']);
         Route::post('orders/{order}/quote/reject', [OrderQuoteController::class, 'reject']);
@@ -83,6 +157,9 @@ $registerRoutes = function (): void {
         Route::post('orders/{order}/messages', [MessageController::class, 'store']);
 
         Route::post('ratings', [RatingController::class, 'store']);
+        Route::post('shops/{shop}/favorite', [FavoriteShopController::class, 'store']);
+        Route::delete('shops/{shop}/favorite', [FavoriteShopController::class, 'destroy']);
+        Route::get('me/favorites', [FavoriteShopController::class, 'index']);
 
         Route::middleware('role:seller')->group(function (): void {
             Route::prefix('seller')->group(function (): void {
@@ -95,6 +172,11 @@ $registerRoutes = function (): void {
 
                 Route::post('products', [SellerProductController::class, 'store']);
                 Route::patch('products/{product}', [SellerProductController::class, 'update']);
+
+                Route::post('orders/{order}/shipping/create', [SellerShippingController::class, 'create']);
+                Route::post('orders/{order}/shipping/mark-packed', [SellerShippingController::class, 'markPacked']);
+                Route::post('orders/{order}/shipping/mark-dropped-off', [SellerShippingController::class, 'markDroppedOff']);
+                Route::post('orders/{order}/shipping/update-status', [SellerShippingController::class, 'updateStatus']);
 
                 Route::post('orders/{order}/workflow/start', [SellerOrderWorkflowController::class, 'start']);
                 Route::post('orders/{order}/workflow/advance', [SellerOrderWorkflowController::class, 'advance']);
@@ -119,7 +201,7 @@ $registerRoutes = function (): void {
             Route::post('orders/{order}/mark-delivered', [RiderOrderFlowController::class, 'markDelivered']);
         });
 
-        Route::middleware('role:admin')->prefix('admin')->group(function (): void {
+        Route::middleware('role:admin')->prefix('legacy-admin')->group(function (): void {
             Route::post('kyc/requests/{kycRequest}/approve', [AdminKycController::class, 'approve']);
             Route::post('kyc/requests/{kycRequest}/reject', [AdminKycController::class, 'reject']);
             Route::post('disputes/{order}/resolve', [AdminDisputeController::class, 'resolve']);

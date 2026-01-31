@@ -4,6 +4,8 @@ namespace App\Domain\Users\Models;
 
 use App\Domain\Kyc\Models\KycRequest;
 use App\Domain\Orders\Models\Order;
+use App\Domain\Recommendations\Models\UserFavorite;
+use App\Domain\Recommendations\Models\UserPreference;
 use App\Domain\Shops\Models\Shop;
 use App\Domain\Users\Enums\UserRole;
 use App\Domain\Users\Enums\UserStatus;
@@ -81,6 +83,16 @@ class User extends Authenticatable
     public function devices()
     {
         return $this->hasMany(UserDevice::class);
+    }
+
+    public function preferences()
+    {
+        return $this->hasOne(UserPreference::class, 'user_id');
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(UserFavorite::class, 'user_id');
     }
 
     public function hasVerifiedPhone(): bool

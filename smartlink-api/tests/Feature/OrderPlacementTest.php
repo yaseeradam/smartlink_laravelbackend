@@ -120,5 +120,98 @@ class OrderPlacementTest extends TestCase
         $buyerWallet->refresh();
         $this->assertSame('3000.00', (string) $buyerWallet->available_balance);
     }
-}
 
+    public function test_shipping_order_can_be_placed_for_non_local_shop(): void
+    {
+        $buyerZone = Zone::create([
+            'name' => 'Buyer Zone',
+            'city' => 'Buyer City',
+            'state' => 'Buyer State',
+            'is_active' => true,
+            'status' => 'active',
+        ]);
+
+        $shopZone = Zone::create([
+            'name' => 'Shop Zone',
+            'city' => 'Shop City',
+            'state' => 'Shop State',
+            'is_active' => true,
+            'status' => 'active',
+        ]);
+
+        $buyer = User::create([
+            'full_name' => 'Buyer',
+            'phone' => '08011111112',
+            'email' => 'buyer2@test.local',
+            'password' => 'password',
+            'role' => UserRole::Buyer,
+            'status' => UserStatus::Active,
+            'phone_verified_at' => now(),
+        ]);
+
+        UserZone::create(['user_id' => $buyer->id, 'zone_id' => $buyerZone->id, 'type' => 'home']);
+
+        $seller = User::create([
+            'full_name' => 'Seller',
+            'phone' => '08022222223',
+            'email' => 'seller2@test.local',
+            'password' => 'password',
+            'role' => UserRole::Seller,
+            'status' => UserStatus::Active,
+            'phone_verified_at' => now(),
+        ]);
+
+        UserZone::create(['user_id' => $seller->id, 'zone_id' => $shopZone->id, 'type' => 'operational']);
+
+        $shop = Shop::create([
+            'seller_user_id' => $seller->id,
+            'shop_name' => 'Shop',
+            'description' => null,
+            'zone_id' => $shopZone->id,
+            'address_text' => 'Addr',
+            'is_verified' => true,
+            'verification_phase' => 'phase1',
+            'shipping_type' => 'state_shipping',
+        ]);
+
+        $product = Product::create([
+            'shop_id' => $shop->id,
+            'name' => 'Item',
+            'description' => null,
+            'price' => 1000,
+            'currency' => 'NGN',
+            'stock_qty' => 10,
+            'status' => 'active',
+        ]);
+
+        /** @var WalletService $walletService */
+        $walletService = app(WalletService::class);
+        $buyerWallet = $walletService->walletFor($buyer);
+        $walletService->record(
+            $buyerWallet,
+            WalletTransactionType::Topup,
+            WalletTransactionDirection::In,
+            5000,
+            'test:topup',
+            meta: ['actor_user_id' => $buyer->id],
+        );
+
+        Sanctum::actingAs($buyer);
+
+        $response = $this->postJson('/api/orders', [
+            'shop_id' => $shop->id,
+            'delivery_address_text' => 'Buyer Address',
+            'items' => [
+                ['product_id' => $product->id, 'qty' => 1],
+            ],
+        ]);
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('orders', [
+            'shop_id' => $shop->id,
+            'buyer_user_id' => $buyer->id,
+            'fulfillment_mode' => 'shipping',
+        ]);
+    }
+}

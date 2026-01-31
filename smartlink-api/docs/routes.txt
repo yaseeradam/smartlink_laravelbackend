@@ -1,0 +1,262 @@
+
+  GET|HEAD   / ....................................................................................................... 
+  POST       _ignition/execute-solution ignition.executeSolution › Spatie\LaravelIgnition › ExecuteSolutionController
+  GET|HEAD   _ignition/health-check ............ ignition.healthCheck › Spatie\LaravelIgnition › HealthCheckController
+  POST       _ignition/update-config ......... ignition.updateConfig › Spatie\LaravelIgnition › UpdateConfigController
+  POST       api/admin/auth/login ............................. App\Domain\Admin\Controllers\AdminAuthController@login
+  POST       api/admin/auth/logout ........................... App\Domain\Admin\Controllers\AdminAuthController@logout
+  GET|HEAD   api/admin/auth/me ................................... App\Domain\Admin\Controllers\AdminAuthController@me
+  GET|HEAD   api/admin/disputes ........................... App\Domain\Admin\Controllers\AdminDisputesController@index
+  GET|HEAD   api/admin/disputes/{dispute} .................. App\Domain\Admin\Controllers\AdminDisputesController@show
+  POST       api/admin/disputes/{dispute}/resolve ....... App\Domain\Admin\Controllers\AdminDisputesController@resolve
+  GET|HEAD   api/admin/orders ............................... App\Domain\Admin\Controllers\AdminOrdersController@index
+  GET|HEAD   api/admin/orders/{order} ........................ App\Domain\Admin\Controllers\AdminOrdersController@show
+  POST       api/admin/orders/{order}/cancel ............... App\Domain\Admin\Controllers\AdminOrdersController@cancel
+  POST       api/admin/orders/{order}/force-complete App\Domain\Admin\Controllers\AdminOrdersController@forceComplete
+  POST       api/admin/orders/{order}/force-refund .... App\Domain\Admin\Controllers\AdminOrdersController@forceRefund
+  POST       api/admin/orders/{order}/force-release-escrow App\Domain\Admin\Controllers\AdminOrdersController@forceRe…
+  POST       api/admin/orders/{order}/hold-funds ........ App\Domain\Admin\Controllers\AdminOrdersController@holdFunds
+  POST       api/admin/orders/{order}/override-workflow-step App\Domain\Admin\Controllers\AdminOrdersController@overr…
+  POST       api/admin/orders/{order}/pause ................. App\Domain\Admin\Controllers\AdminOrdersController@pause
+  POST       api/admin/orders/{order}/resume ............... App\Domain\Admin\Controllers\AdminOrdersController@resume
+  POST       api/admin/orders/{order}/unhold-funds .... App\Domain\Admin\Controllers\AdminOrdersController@unholdFunds
+  GET|HEAD   api/admin/riders ............................... App\Domain\Admin\Controllers\AdminRidersController@index
+  POST       api/admin/riders/{user}/suspend .............. App\Domain\Admin\Controllers\AdminRidersController@suspend
+  POST       api/admin/riders/{user}/verify ................ App\Domain\Admin\Controllers\AdminRidersController@verify
+  GET|HEAD   api/admin/shipments ......................... App\Domain\Admin\Controllers\AdminShipmentsController@index
+  GET|HEAD   api/admin/shipments/{shipment} ............... App\Domain\Admin\Controllers\AdminShipmentsController@show
+  POST       api/admin/shipments/{shipment}/force-delivered App\Domain\Admin\Controllers\AdminShipmentsController@for…
+  POST       api/admin/shipments/{shipment}/force-failed App\Domain\Admin\Controllers\AdminShipmentsController@forceF…
+  POST       api/admin/shipments/{shipment}/invalidate-tracking App\Domain\Admin\Controllers\AdminShipmentsController…
+  POST       api/admin/shipments/{shipment}/mark-status App\Domain\Admin\Controllers\AdminShipmentsController@markSta…
+  GET|HEAD   api/admin/shops ................................. App\Domain\Admin\Controllers\AdminShopsController@index
+  POST       api/admin/shops/{shop}/suspend ................ App\Domain\Admin\Controllers\AdminShopsController@suspend
+  POST       api/admin/shops/{shop}/unsuspend ............ App\Domain\Admin\Controllers\AdminShopsController@unsuspend
+  POST       api/admin/shops/{shop}/verify .................. App\Domain\Admin\Controllers\AdminShopsController@verify
+  GET|HEAD   api/admin/users ................................. App\Domain\Admin\Controllers\AdminUsersController@index
+  POST       api/admin/users/{user}/suspend ................ App\Domain\Admin\Controllers\AdminUsersController@suspend
+  POST       api/admin/users/{user}/unsuspend ............ App\Domain\Admin\Controllers\AdminUsersController@unsuspend
+  POST       api/auth/login ......................................... App\Domain\Auth\Controllers\AuthController@login
+  POST       api/auth/logout ....................................... App\Domain\Auth\Controllers\AuthController@logout
+  POST       api/auth/otp/send ........................................ App\Domain\Auth\Controllers\OtpController@send
+  POST       api/auth/otp/verify .................................... App\Domain\Auth\Controllers\OtpController@verify
+  POST       api/auth/register ................................... App\Domain\Auth\Controllers\AuthController@register
+  POST       api/events ............................. App\Domain\Recommendations\Controllers\UserEventController@store
+  GET|HEAD   api/feed/across-nigeria ............. App\Domain\Recommendations\Controllers\FeedController@acrossNigeria
+  GET|HEAD   api/feed/for-you ........................... App\Domain\Recommendations\Controllers\FeedController@forYou
+  GET|HEAD   api/feed/home ................................ App\Domain\Recommendations\Controllers\FeedController@home
+  GET|HEAD   api/feed/in-your-state ................ App\Domain\Recommendations\Controllers\FeedController@inYourState
+  GET|HEAD   api/feed/near-you ......................... App\Domain\Recommendations\Controllers\FeedController@nearYou
+  GET|HEAD   api/feed/ready-soon ..................... App\Domain\Recommendations\Controllers\FeedController@readySoon
+  GET|HEAD   api/feed/top-rated ....................... App\Domain\Recommendations\Controllers\FeedController@topRated
+  GET|HEAD   api/feed/trending ........................ App\Domain\Recommendations\Controllers\FeedController@trending
+  GET|HEAD   api/kyc/status .......................................... App\Domain\Kyc\Controllers\KycController@status
+  POST       api/kyc/submit .......................................... App\Domain\Kyc\Controllers\KycController@submit
+  GET|HEAD   api/legacy-admin/blocked-entities ....... App\Domain\Fraud\Controllers\AdminBlockedEntityController@index
+  POST       api/legacy-admin/blocked-entities ....... App\Domain\Fraud\Controllers\AdminBlockedEntityController@store
+  GET|HEAD   api/legacy-admin/delivery-pricing-rules App\Domain\Delivery\Controllers\AdminDeliveryPricingRuleControll…
+  POST       api/legacy-admin/delivery-pricing-rules App\Domain\Delivery\Controllers\AdminDeliveryPricingRuleControll…
+  POST       api/legacy-admin/disputes/{order}/resolve App\Domain\Disputes\Controllers\AdminDisputeController@resolve
+  POST       api/legacy-admin/kyc/requests/{kycRequest}/approve App\Domain\Kyc\Controllers\AdminKycController@approve
+  POST       api/legacy-admin/kyc/requests/{kycRequest}/reject .. App\Domain\Kyc\Controllers\AdminKycController@reject
+  POST       api/legacy-admin/payouts/trigger ............ App\Domain\Escrow\Controllers\AdminPayoutController@trigger
+  POST       api/legacy-admin/returns/{returnRequest}/approve App\Domain\Returns\Controllers\AdminReturnController@ap…
+  POST       api/legacy-admin/returns/{returnRequest}/complete App\Domain\Returns\Controllers\AdminReturnController@c…
+  POST       api/legacy-admin/returns/{returnRequest}/reject App\Domain\Returns\Controllers\AdminReturnController@rej…
+  PATCH      api/legacy-admin/workflow-steps/{workflowStep} App\Domain\Workflows\Controllers\AdminWorkflowStepControl…
+  DELETE     api/legacy-admin/workflow-steps/{workflowStep} App\Domain\Workflows\Controllers\AdminWorkflowStepControl…
+  GET|HEAD   api/legacy-admin/workflows ............... App\Domain\Workflows\Controllers\AdminWorkflowController@index
+  POST       api/legacy-admin/workflows ............... App\Domain\Workflows\Controllers\AdminWorkflowController@store
+  GET|HEAD   api/legacy-admin/workflows/{workflow} ..... App\Domain\Workflows\Controllers\AdminWorkflowController@show
+  PATCH      api/legacy-admin/workflows/{workflow} ... App\Domain\Workflows\Controllers\AdminWorkflowController@update
+  POST       api/legacy-admin/workflows/{workflow}/steps App\Domain\Workflows\Controllers\AdminWorkflowStepController…
+  POST       api/legacy-admin/workflows/{workflow}/transitions App\Domain\Workflows\Controllers\AdminWorkflowTransiti…
+  DELETE     api/legacy-admin/workflows/{workflow}/transitions App\Domain\Workflows\Controllers\AdminWorkflowTransiti…
+  POST       api/legacy-admin/zones/{zone}/pause .............. App\Domain\Zones\Controllers\AdminZoneController@pause
+  POST       api/legacy-admin/zones/{zone}/resume ............ App\Domain\Zones\Controllers\AdminZoneController@resume
+  GET|HEAD   api/me .................................................... App\Domain\Auth\Controllers\AuthController@me
+  GET|HEAD   api/me/favorites .................... App\Domain\Recommendations\Controllers\FavoriteShopController@index
+  POST       api/orders .......................................... App\Domain\Orders\Controllers\OrderController@store
+  GET|HEAD   api/orders .......................................... App\Domain\Orders\Controllers\OrderController@index
+  POST       api/orders/service ........................... App\Domain\Orders\Controllers\ServiceOrderController@store
+  GET|HEAD   api/orders/{order} ................................... App\Domain\Orders\Controllers\OrderController@show
+  POST       api/orders/{order}/cancel .......................... App\Domain\Orders\Controllers\OrderController@cancel
+  POST       api/orders/{order}/confirm-delivery ....... App\Domain\Orders\Controllers\OrderController@confirmDelivery
+  POST       api/orders/{order}/dispatch ........... App\Domain\Dispatch\Controllers\SellerDispatchController@dispatch
+  GET|HEAD   api/orders/{order}/messages .................... App\Domain\Messaging\Controllers\MessageController@index
+  POST       api/orders/{order}/messages .................... App\Domain\Messaging\Controllers\MessageController@store
+  POST       api/orders/{order}/quote/approve ............. App\Domain\Orders\Controllers\OrderQuoteController@approve
+  POST       api/orders/{order}/quote/reject ............... App\Domain\Orders\Controllers\OrderQuoteController@reject
+  POST       api/orders/{order}/raise-dispute ............. App\Domain\Orders\Controllers\OrderController@raiseDispute
+  POST       api/orders/{order}/returns ........................ App\Domain\Returns\Controllers\ReturnController@store
+  POST       api/orders/{order}/shipping/confirm-delivery App\Domain\Shipping\Controllers\BuyerShippingController@con…
+  GET|HEAD   api/products .............................. App\Domain\Products\Controllers\PublicProductController@index
+  GET|HEAD   api/products/{product} ..................... App\Domain\Products\Controllers\PublicProductController@show
+  POST       api/ratings ....................................... App\Domain\Ratings\Controllers\RatingController@store
+  GET|HEAD   api/rider/dispatch/offers ................ App\Domain\Dispatch\Controllers\RiderDispatchController@offers
+  POST       api/rider/dispatch/offers/{offerId}/accept App\Domain\Dispatch\Controllers\RiderDispatchController@accept
+  POST       api/rider/dispatch/offers/{offerId}/decline App\Domain\Dispatch\Controllers\RiderDispatchController@decl…
+  POST       api/rider/orders/{order}/delivery-proof App\Domain\Dispatch\Controllers\RiderOrderFlowController@uploadD…
+  POST       api/rider/orders/{order}/mark-delivered App\Domain\Dispatch\Controllers\RiderOrderFlowController@markDel…
+  POST       api/rider/orders/{order}/mark-picked-up App\Domain\Dispatch\Controllers\RiderOrderFlowController@markPic…
+  POST       api/rider/orders/{order}/pickup-proof App\Domain\Dispatch\Controllers\RiderOrderFlowController@uploadPic…
+  GET|HEAD   api/seller/metrics ............................ App\Domain\Shops\Controllers\SellerMetricsController@show
+  GET|HEAD   api/seller/orders ....................... App\Domain\Dispatch\Controllers\SellerDispatchController@orders
+  POST       api/seller/orders/{order}/quote/send ............ App\Domain\Orders\Controllers\OrderQuoteController@send
+  POST       api/seller/orders/{order}/shipping/create App\Domain\Shipping\Controllers\SellerShippingController@create
+  POST       api/seller/orders/{order}/shipping/mark-dropped-off App\Domain\Shipping\Controllers\SellerShippingContro…
+  POST       api/seller/orders/{order}/shipping/mark-packed App\Domain\Shipping\Controllers\SellerShippingController@…
+  POST       api/seller/orders/{order}/shipping/update-status App\Domain\Shipping\Controllers\SellerShippingControlle…
+  POST       api/seller/orders/{order}/workflow/advance App\Domain\Orders\Controllers\SellerOrderWorkflowController@a…
+  GET|HEAD   api/seller/orders/{order}/workflow/next-steps App\Domain\Orders\Controllers\SellerOrderWorkflowControlle…
+  POST       api/seller/orders/{order}/workflow/start App\Domain\Orders\Controllers\SellerOrderWorkflowController@sta…
+  POST       api/seller/products ....................... App\Domain\Products\Controllers\SellerProductController@store
+  PATCH      api/seller/products/{product} ............ App\Domain\Products\Controllers\SellerProductController@update
+  POST       api/seller/rider-pool/add ....... App\Domain\Dispatch\Controllers\SellerDispatchController@addRiderToPool
+  POST       api/seller/rider-pool/remove App\Domain\Dispatch\Controllers\SellerDispatchController@removeRiderFromPool
+  POST       api/seller/shop ................................. App\Domain\Shops\Controllers\SellerShopController@store
+  GET|HEAD   api/seller/shops ................................ App\Domain\Shops\Controllers\SellerShopController@index
+  GET|HEAD   api/seller/shops/{shop} .......................... App\Domain\Shops\Controllers\SellerShopController@show
+  POST       api/seller/shops/{shop}/default-workflow App\Domain\Shops\Controllers\SellerShopController@setDefaultWor…
+  GET|HEAD   api/shops ....................................... App\Domain\Shops\Controllers\PublicShopController@index
+  GET|HEAD   api/shops/{shop} ................................. App\Domain\Shops\Controllers\PublicShopController@show
+  POST       api/shops/{shop}/favorite ........... App\Domain\Recommendations\Controllers\FavoriteShopController@store
+  DELETE     api/shops/{shop}/favorite ......... App\Domain\Recommendations\Controllers\FavoriteShopController@destroy
+  POST       api/user/devices ................................ App\Domain\Users\Controllers\UserDeviceController@store
+  POST       api/user/zones .................................... App\Domain\Users\Controllers\UserZoneController@store
+  POST       api/v1/admin/auth/login .......................... App\Domain\Admin\Controllers\AdminAuthController@login
+  POST       api/v1/admin/auth/logout ........................ App\Domain\Admin\Controllers\AdminAuthController@logout
+  GET|HEAD   api/v1/admin/auth/me ................................ App\Domain\Admin\Controllers\AdminAuthController@me
+  GET|HEAD   api/v1/admin/disputes ........................ App\Domain\Admin\Controllers\AdminDisputesController@index
+  GET|HEAD   api/v1/admin/disputes/{dispute} ............... App\Domain\Admin\Controllers\AdminDisputesController@show
+  POST       api/v1/admin/disputes/{dispute}/resolve .... App\Domain\Admin\Controllers\AdminDisputesController@resolve
+  GET|HEAD   api/v1/admin/orders ............................ App\Domain\Admin\Controllers\AdminOrdersController@index
+  GET|HEAD   api/v1/admin/orders/{order} ..................... App\Domain\Admin\Controllers\AdminOrdersController@show
+  POST       api/v1/admin/orders/{order}/cancel ............ App\Domain\Admin\Controllers\AdminOrdersController@cancel
+  POST       api/v1/admin/orders/{order}/force-complete App\Domain\Admin\Controllers\AdminOrdersController@forceCompl…
+  POST       api/v1/admin/orders/{order}/force-refund . App\Domain\Admin\Controllers\AdminOrdersController@forceRefund
+  POST       api/v1/admin/orders/{order}/force-release-escrow App\Domain\Admin\Controllers\AdminOrdersController@forc…
+  POST       api/v1/admin/orders/{order}/hold-funds ..... App\Domain\Admin\Controllers\AdminOrdersController@holdFunds
+  POST       api/v1/admin/orders/{order}/override-workflow-step App\Domain\Admin\Controllers\AdminOrdersController@ov…
+  POST       api/v1/admin/orders/{order}/pause .............. App\Domain\Admin\Controllers\AdminOrdersController@pause
+  POST       api/v1/admin/orders/{order}/resume ............ App\Domain\Admin\Controllers\AdminOrdersController@resume
+  POST       api/v1/admin/orders/{order}/unhold-funds . App\Domain\Admin\Controllers\AdminOrdersController@unholdFunds
+  GET|HEAD   api/v1/admin/riders ............................ App\Domain\Admin\Controllers\AdminRidersController@index
+  POST       api/v1/admin/riders/{user}/suspend ........... App\Domain\Admin\Controllers\AdminRidersController@suspend
+  POST       api/v1/admin/riders/{user}/verify ............. App\Domain\Admin\Controllers\AdminRidersController@verify
+  GET|HEAD   api/v1/admin/shipments ...................... App\Domain\Admin\Controllers\AdminShipmentsController@index
+  GET|HEAD   api/v1/admin/shipments/{shipment} ............ App\Domain\Admin\Controllers\AdminShipmentsController@show
+  POST       api/v1/admin/shipments/{shipment}/force-delivered App\Domain\Admin\Controllers\AdminShipmentsController@…
+  POST       api/v1/admin/shipments/{shipment}/force-failed App\Domain\Admin\Controllers\AdminShipmentsController@for…
+  POST       api/v1/admin/shipments/{shipment}/invalidate-tracking App\Domain\Admin\Controllers\AdminShipmentsControl…
+  POST       api/v1/admin/shipments/{shipment}/mark-status App\Domain\Admin\Controllers\AdminShipmentsController@mark…
+  GET|HEAD   api/v1/admin/shops .............................. App\Domain\Admin\Controllers\AdminShopsController@index
+  POST       api/v1/admin/shops/{shop}/suspend ............. App\Domain\Admin\Controllers\AdminShopsController@suspend
+  POST       api/v1/admin/shops/{shop}/unsuspend ......... App\Domain\Admin\Controllers\AdminShopsController@unsuspend
+  POST       api/v1/admin/shops/{shop}/verify ............... App\Domain\Admin\Controllers\AdminShopsController@verify
+  GET|HEAD   api/v1/admin/users .............................. App\Domain\Admin\Controllers\AdminUsersController@index
+  POST       api/v1/admin/users/{user}/suspend ............. App\Domain\Admin\Controllers\AdminUsersController@suspend
+  POST       api/v1/admin/users/{user}/unsuspend ......... App\Domain\Admin\Controllers\AdminUsersController@unsuspend
+  POST       api/v1/auth/login ...................................... App\Domain\Auth\Controllers\AuthController@login
+  POST       api/v1/auth/logout .................................... App\Domain\Auth\Controllers\AuthController@logout
+  POST       api/v1/auth/otp/send ..................................... App\Domain\Auth\Controllers\OtpController@send
+  POST       api/v1/auth/otp/verify ................................. App\Domain\Auth\Controllers\OtpController@verify
+  POST       api/v1/auth/register ................................ App\Domain\Auth\Controllers\AuthController@register
+  POST       api/v1/events .......................... App\Domain\Recommendations\Controllers\UserEventController@store
+  GET|HEAD   api/v1/feed/across-nigeria .......... App\Domain\Recommendations\Controllers\FeedController@acrossNigeria
+  GET|HEAD   api/v1/feed/for-you ........................ App\Domain\Recommendations\Controllers\FeedController@forYou
+  GET|HEAD   api/v1/feed/home ............................. App\Domain\Recommendations\Controllers\FeedController@home
+  GET|HEAD   api/v1/feed/in-your-state ............. App\Domain\Recommendations\Controllers\FeedController@inYourState
+  GET|HEAD   api/v1/feed/near-you ...................... App\Domain\Recommendations\Controllers\FeedController@nearYou
+  GET|HEAD   api/v1/feed/ready-soon .................. App\Domain\Recommendations\Controllers\FeedController@readySoon
+  GET|HEAD   api/v1/feed/top-rated .................... App\Domain\Recommendations\Controllers\FeedController@topRated
+  GET|HEAD   api/v1/feed/trending ..................... App\Domain\Recommendations\Controllers\FeedController@trending
+  GET|HEAD   api/v1/kyc/status ....................................... App\Domain\Kyc\Controllers\KycController@status
+  POST       api/v1/kyc/submit ....................................... App\Domain\Kyc\Controllers\KycController@submit
+  GET|HEAD   api/v1/legacy-admin/blocked-entities .... App\Domain\Fraud\Controllers\AdminBlockedEntityController@index
+  POST       api/v1/legacy-admin/blocked-entities .... App\Domain\Fraud\Controllers\AdminBlockedEntityController@store
+  GET|HEAD   api/v1/legacy-admin/delivery-pricing-rules App\Domain\Delivery\Controllers\AdminDeliveryPricingRuleContr…
+  POST       api/v1/legacy-admin/delivery-pricing-rules App\Domain\Delivery\Controllers\AdminDeliveryPricingRuleContr…
+  POST       api/v1/legacy-admin/disputes/{order}/resolve App\Domain\Disputes\Controllers\AdminDisputeController@reso…
+  POST       api/v1/legacy-admin/kyc/requests/{kycRequest}/approve App\Domain\Kyc\Controllers\AdminKycController@appr…
+  POST       api/v1/legacy-admin/kyc/requests/{kycRequest}/reject App\Domain\Kyc\Controllers\AdminKycController@reject
+  POST       api/v1/legacy-admin/payouts/trigger ......... App\Domain\Escrow\Controllers\AdminPayoutController@trigger
+  POST       api/v1/legacy-admin/returns/{returnRequest}/approve App\Domain\Returns\Controllers\AdminReturnController…
+  POST       api/v1/legacy-admin/returns/{returnRequest}/complete App\Domain\Returns\Controllers\AdminReturnControlle…
+  POST       api/v1/legacy-admin/returns/{returnRequest}/reject App\Domain\Returns\Controllers\AdminReturnController@…
+  PATCH      api/v1/legacy-admin/workflow-steps/{workflowStep} App\Domain\Workflows\Controllers\AdminWorkflowStepCont…
+  DELETE     api/v1/legacy-admin/workflow-steps/{workflowStep} App\Domain\Workflows\Controllers\AdminWorkflowStepCont…
+  GET|HEAD   api/v1/legacy-admin/workflows ............ App\Domain\Workflows\Controllers\AdminWorkflowController@index
+  POST       api/v1/legacy-admin/workflows ............ App\Domain\Workflows\Controllers\AdminWorkflowController@store
+  GET|HEAD   api/v1/legacy-admin/workflows/{workflow} .. App\Domain\Workflows\Controllers\AdminWorkflowController@show
+  PATCH      api/v1/legacy-admin/workflows/{workflow} App\Domain\Workflows\Controllers\AdminWorkflowController@update
+  POST       api/v1/legacy-admin/workflows/{workflow}/steps App\Domain\Workflows\Controllers\AdminWorkflowStepControl…
+  POST       api/v1/legacy-admin/workflows/{workflow}/transitions App\Domain\Workflows\Controllers\AdminWorkflowTrans…
+  DELETE     api/v1/legacy-admin/workflows/{workflow}/transitions App\Domain\Workflows\Controllers\AdminWorkflowTrans…
+  POST       api/v1/legacy-admin/zones/{zone}/pause ........... App\Domain\Zones\Controllers\AdminZoneController@pause
+  POST       api/v1/legacy-admin/zones/{zone}/resume ......... App\Domain\Zones\Controllers\AdminZoneController@resume
+  GET|HEAD   api/v1/me ................................................. App\Domain\Auth\Controllers\AuthController@me
+  GET|HEAD   api/v1/me/favorites ................. App\Domain\Recommendations\Controllers\FavoriteShopController@index
+  POST       api/v1/orders ....................................... App\Domain\Orders\Controllers\OrderController@store
+  GET|HEAD   api/v1/orders ....................................... App\Domain\Orders\Controllers\OrderController@index
+  POST       api/v1/orders/service ........................ App\Domain\Orders\Controllers\ServiceOrderController@store
+  GET|HEAD   api/v1/orders/{order} ................................ App\Domain\Orders\Controllers\OrderController@show
+  POST       api/v1/orders/{order}/cancel ....................... App\Domain\Orders\Controllers\OrderController@cancel
+  POST       api/v1/orders/{order}/confirm-delivery .... App\Domain\Orders\Controllers\OrderController@confirmDelivery
+  POST       api/v1/orders/{order}/dispatch ........ App\Domain\Dispatch\Controllers\SellerDispatchController@dispatch
+  GET|HEAD   api/v1/orders/{order}/messages ................. App\Domain\Messaging\Controllers\MessageController@index
+  POST       api/v1/orders/{order}/messages ................. App\Domain\Messaging\Controllers\MessageController@store
+  POST       api/v1/orders/{order}/quote/approve .......... App\Domain\Orders\Controllers\OrderQuoteController@approve
+  POST       api/v1/orders/{order}/quote/reject ............ App\Domain\Orders\Controllers\OrderQuoteController@reject
+  POST       api/v1/orders/{order}/raise-dispute .......... App\Domain\Orders\Controllers\OrderController@raiseDispute
+  POST       api/v1/orders/{order}/returns ..................... App\Domain\Returns\Controllers\ReturnController@store
+  POST       api/v1/orders/{order}/shipping/confirm-delivery App\Domain\Shipping\Controllers\BuyerShippingController@…
+  GET|HEAD   api/v1/products ........................... App\Domain\Products\Controllers\PublicProductController@index
+  GET|HEAD   api/v1/products/{product} .................. App\Domain\Products\Controllers\PublicProductController@show
+  POST       api/v1/ratings .................................... App\Domain\Ratings\Controllers\RatingController@store
+  GET|HEAD   api/v1/rider/dispatch/offers ............. App\Domain\Dispatch\Controllers\RiderDispatchController@offers
+  POST       api/v1/rider/dispatch/offers/{offerId}/accept App\Domain\Dispatch\Controllers\RiderDispatchController@ac…
+  POST       api/v1/rider/dispatch/offers/{offerId}/decline App\Domain\Dispatch\Controllers\RiderDispatchController@d…
+  POST       api/v1/rider/orders/{order}/delivery-proof App\Domain\Dispatch\Controllers\RiderOrderFlowController@uplo…
+  POST       api/v1/rider/orders/{order}/mark-delivered App\Domain\Dispatch\Controllers\RiderOrderFlowController@mark…
+  POST       api/v1/rider/orders/{order}/mark-picked-up App\Domain\Dispatch\Controllers\RiderOrderFlowController@mark…
+  POST       api/v1/rider/orders/{order}/pickup-proof App\Domain\Dispatch\Controllers\RiderOrderFlowController@upload…
+  GET|HEAD   api/v1/seller/metrics ......................... App\Domain\Shops\Controllers\SellerMetricsController@show
+  GET|HEAD   api/v1/seller/orders .................... App\Domain\Dispatch\Controllers\SellerDispatchController@orders
+  POST       api/v1/seller/orders/{order}/quote/send ......... App\Domain\Orders\Controllers\OrderQuoteController@send
+  POST       api/v1/seller/orders/{order}/shipping/create App\Domain\Shipping\Controllers\SellerShippingController@cr…
+  POST       api/v1/seller/orders/{order}/shipping/mark-dropped-off App\Domain\Shipping\Controllers\SellerShippingCon…
+  POST       api/v1/seller/orders/{order}/shipping/mark-packed App\Domain\Shipping\Controllers\SellerShippingControll…
+  POST       api/v1/seller/orders/{order}/shipping/update-status App\Domain\Shipping\Controllers\SellerShippingContro…
+  POST       api/v1/seller/orders/{order}/workflow/advance App\Domain\Orders\Controllers\SellerOrderWorkflowControlle…
+  GET|HEAD   api/v1/seller/orders/{order}/workflow/next-steps App\Domain\Orders\Controllers\SellerOrderWorkflowContro…
+  POST       api/v1/seller/orders/{order}/workflow/start App\Domain\Orders\Controllers\SellerOrderWorkflowController@…
+  POST       api/v1/seller/products .................... App\Domain\Products\Controllers\SellerProductController@store
+  PATCH      api/v1/seller/products/{product} ......... App\Domain\Products\Controllers\SellerProductController@update
+  POST       api/v1/seller/rider-pool/add .... App\Domain\Dispatch\Controllers\SellerDispatchController@addRiderToPool
+  POST       api/v1/seller/rider-pool/remove App\Domain\Dispatch\Controllers\SellerDispatchController@removeRiderFrom…
+  POST       api/v1/seller/shop .............................. App\Domain\Shops\Controllers\SellerShopController@store
+  GET|HEAD   api/v1/seller/shops ............................. App\Domain\Shops\Controllers\SellerShopController@index
+  GET|HEAD   api/v1/seller/shops/{shop} ....................... App\Domain\Shops\Controllers\SellerShopController@show
+  POST       api/v1/seller/shops/{shop}/default-workflow App\Domain\Shops\Controllers\SellerShopController@setDefault…
+  GET|HEAD   api/v1/shops .................................... App\Domain\Shops\Controllers\PublicShopController@index
+  GET|HEAD   api/v1/shops/{shop} .............................. App\Domain\Shops\Controllers\PublicShopController@show
+  POST       api/v1/shops/{shop}/favorite ........ App\Domain\Recommendations\Controllers\FavoriteShopController@store
+  DELETE     api/v1/shops/{shop}/favorite ...... App\Domain\Recommendations\Controllers\FavoriteShopController@destroy
+  POST       api/v1/user/devices ............................. App\Domain\Users\Controllers\UserDeviceController@store
+  POST       api/v1/user/zones ................................. App\Domain\Users\Controllers\UserZoneController@store
+  GET|HEAD   api/v1/wallet ....................................... App\Domain\Wallet\Controllers\WalletController@show
+  POST       api/v1/wallet/topup/initiate ............... App\Domain\Wallet\Controllers\WalletController@initiateTopup
+  GET|HEAD   api/v1/wallet/transactions .................. App\Domain\Wallet\Controllers\WalletController@transactions
+  POST       api/v1/webhooks/paystack ............... App\Domain\Webhooks\Controllers\PaystackWebhookController@handle
+  GET|HEAD   api/v1/zones .......................................... App\Domain\Zones\Controllers\ZoneController@index
+  GET|HEAD   api/wallet .......................................... App\Domain\Wallet\Controllers\WalletController@show
+  POST       api/wallet/topup/initiate .................. App\Domain\Wallet\Controllers\WalletController@initiateTopup
+  GET|HEAD   api/wallet/transactions ..................... App\Domain\Wallet\Controllers\WalletController@transactions
+  POST       api/webhooks/paystack .................. App\Domain\Webhooks\Controllers\PaystackWebhookController@handle
+  GET|HEAD   api/zones ............................................. App\Domain\Zones\Controllers\ZoneController@index
+  GET|POST|HEAD broadcasting/auth ......................... Illuminate\Broadcasting › BroadcastController@authenticate
+  GET|HEAD   sanctum/csrf-cookie ................... sanctum.csrf-cookie › Laravel\Sanctum › CsrfCookieController@show
+
+                                                                                                  Showing [258] routes
+

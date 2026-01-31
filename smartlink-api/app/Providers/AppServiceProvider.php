@@ -13,6 +13,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\RateLimiter;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        Sanctum::ignoreMigrations();
+
         $this->app->bind(OtpProvider::class, function () {
             return match (config('smartlink.otp.driver')) {
                 'termii' => $this->app->make(TermiiOtpProvider::class),
@@ -52,6 +55,18 @@ class AppServiceProvider extends ServiceProvider
             $key = 'otp|'.$request->ip().'|'.(string) $request->input('phone', '');
 
             return Limit::perMinute(5)->by($key);
+        });
+
+        RateLimiter::for('admin', function (Request $request) {
+            $key = 'admin|'.$request->ip().'|'.(string) optional($request->user('admin'))->id;
+
+            return Limit::perMinute(60)->by($key);
+        });
+
+        RateLimiter::for('admin_login', function (Request $request) {
+            $key = 'admin_login|'.$request->ip().'|'.(string) $request->input('email', '');
+
+            return Limit::perMinute(10)->by($key);
         });
     }
 }
