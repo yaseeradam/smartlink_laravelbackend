@@ -1,0 +1,101 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Home Cleaning",
+      "icon": "cleaning_services"
+    },
+    {
+      "id": 2,
+      "name": "Plumbing",
+      "icon": "plumbing"
+    },
+    {
+      "id": 3,
+      "name": "Electrical",
+      "icon": "electric_bolt"
+    },
+    {
+      "id": 4,
+      "name": "AC Repair",
+      "icon": "ac_unit"
+    },
+    {
+      "id": 5,
+      "name": "Beauty",
+      "icon": "spa"
+    }
+  ],
+  "services": [
+    {
+      "id": 101,
+      "category_id": 2,
+      "title": "Fix leaking tap",
+      "description": "Quick diagnostics and repair for leaking taps, pipes, and fittings.",
+      "pricing_type": "quote",
+      "merchant": {
+        "id": 9001,
+        "full_name": "Ayo Plumbing Co.",
+        "trusted": true,
+        "identity_verified": true,
+        "rating_avg": 4.8,
+        "coverage_areas": [
+          { "coverage_type": "local", "state": "Lagos", "city": "Ikeja", "area": "Allen" }
+        ]
+      }
+    },
+    {
+      "id": 102,
+      "category_id": 3,
+      "title": "Wiring inspection",
+      "description": "Safety inspection for home wiring, sockets, and breakers. Clear recommendations included.",
+      "pricing_type": "quote",
+      "merchant": {
+        "id": 9002,
+        "full_name": "BrightWire Electric",
+        "trusted": true,
+        "identity_verified": false,
+        "rating_avg": 4.6,
+        "coverage_areas": [
+          { "coverage_type": "state", "state": "Lagos", "city": null, "area": null }
+        ]
+      }
+    },
+    {
+      "id": 103,
+      "category_id": 1,
+      "title": "Deep clean (2-bedroom)",
+      "description": "Soft-touch deep cleaning for floors, kitchen, bathroom, and surfaces. Supplies included.",
+      "pricing_type": "quote",
+      "merchant": {
+        "id": 9003,
+        "full_name": "SoftSparkle Cleaners",
+        "trusted": true,
+        "identity_verified": true,
+        "rating_avg": 4.9,
+        "coverage_areas": [
+          { "coverage_type": "local", "state": "Lagos", "city": "Yaba", "area": "Sabo" },
+          { "coverage_type": "local", "state": "Lagos", "city": "Ikeja", "area": "Alausa" }
+        ]
+      }
+    },
+    {
+      "id": 104,
+      "category_id": 4,
+      "title": "AC servicing",
+      "description": "Routine AC servicing, cleaning, and performance checks.",
+      "pricing_type": "quote",
+      "merchant": {
+        "id": 9004,
+        "full_name": "CoolFlow AC",
+        "trusted": false,
+        "identity_verified": false,
+        "rating_avg": 4.3,
+        "coverage_areas": [
+          { "coverage_type": "nationwide", "state": null, "city": null, "area": null }
+        ]
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,35 @@
+[
+  {
+    "id": "user1",
+    "name": "John Doe",
+    "email": "buyer@test.com",
+    "phone": "+234 801 111 1111",
+    "role": "buyer",
+    "location": "Ikeja, Lagos",
+    "profileImage": "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg",
+    "rating": 4.5,
+    "isVerified": true
+  },
+  {
+    "id": "seller1",
+    "name": "Mama Ngozi",
+    "email": "seller@test.com",
+    "phone": "+234 802 222 2222",
+    "role": "seller",
+    "location": "Ikeja, Lagos",
+    "profileImage": "https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg",
+    "rating": 4.7,
+    "isVerified": true
+  },
+  {
+    "id": "rider1",
+    "name": "Emeka Johnson",
+    "email": "rider@test.com",
+    "phone": "+234 803 333 3333",
+    "role": "rider",
+    "location": "Ikeja, Lagos",
+    "profileImage": "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg",
+    "rating": 4.8,
+    "isVerified": true
+  }
+]

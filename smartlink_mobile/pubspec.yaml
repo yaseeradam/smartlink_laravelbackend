@@ -1,0 +1,47 @@
+name: smartlink_mobile
+description: SmartLink - Exact HTML to Flutter conversion
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  google_fonts: ^6.1.0
+  image_picker: ^1.0.7
+  intl: ^0.18.1
+  shimmer: ^3.0.0
+  cached_network_image: ^3.3.1
+  flutter_rating_bar: ^4.0.1
+  google_maps_flutter: ^2.5.3
+  geolocator: ^11.0.0
+  dio: ^5.4.0
+  connectivity_plus: ^5.0.2
+  http: ^1.1.0
+  url_launcher: ^6.2.4
+  socket_io_client: ^3.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/mock_data/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+  adaptive_icon_background: "#21c45d"
+  adaptive_icon_foreground: "assets/images/logo.png"

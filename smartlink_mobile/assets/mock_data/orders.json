@@ -1,0 +1,80 @@
+[
+  {
+    "id": "order1",
+    "buyerId": "user1",
+    "buyerName": "John Doe",
+    "buyerPhone": "+234 801 111 1111",
+    "buyerLocation": "15 Allen Avenue, Ikeja, Lagos",
+    "sellerId": "seller1",
+    "sellerName": "Mama Ngozi Store",
+    "sellerLocation": "Ikeja, Lagos",
+    "items": [
+      {
+        "productId": "prod1",
+        "productTitle": "Fresh Tomatoes (1kg)",
+        "productImage": "https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg",
+        "quantity": 2,
+        "price": 800
+      },
+      {
+        "productId": "prod8",
+        "productTitle": "Garri (10kg)",
+        "productImage": "https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg",
+        "quantity": 1,
+        "price": 5500
+      }
+    ],
+    "totalAmount": 7100,
+    "status": "inTransit",
+    "riderId": "rider1",
+    "riderName": "Emeka Johnson",
+    "createdAt": "2025-11-11T08:30:00Z",
+    "deliveryType": "okada"
+  },
+  {
+    "id": "order2",
+    "buyerId": "user1",
+    "buyerName": "John Doe",
+    "buyerPhone": "+234 801 111 1111",
+    "buyerLocation": "15 Allen Avenue, Ikeja, Lagos",
+    "sellerId": "seller2",
+    "sellerName": "Tech Hub Nigeria",
+    "sellerLocation": "Computer Village, Lagos",
+    "items": [
+      {
+        "productId": "prod2",
+        "productTitle": "Samsung Galaxy A54",
+        "productImage": "https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg",
+        "quantity": 1,
+        "price": 285000
+      }
+    ],
+    "totalAmount": 285000,
+    "status": "pending",
+    "createdAt": "2025-11-11T10:15:00Z",
+    "deliveryType": "okada"
+  },
+  {
+    "id": "order3",
+    "buyerId": "user2",
+    "buyerName": "Sarah Williams",
+    "buyerPhone": "+234 804 444 4444",
+    "buyerLocation": "Abuja",
+    "sellerId": "seller1",
+    "sellerName": "Mama Ngozi Store",
+    "sellerLocation": "Ikeja, Lagos",
+    "items": [
+      {
+        "productId": "prod3",
+        "productTitle": "Rice (50kg Bag)",
+        "productImage": "https://images.pexels.com/photos/315437/pexels-photo-315437.jpeg",
+        "quantity": 3,
+        "price": 52000
+      }
+    ],
+    "totalAmount": 156000,
+    "status": "confirmed",
+    "createdAt": "2025-11-10T14:00:00Z",
+    "deliveryType": "car"
+  }
+]
